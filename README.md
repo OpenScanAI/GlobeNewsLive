@@ -320,10 +320,67 @@ MIT License — see [LICENSE](LICENSE) file.
 - **Flight Tracking**: ADS-B Exchange
 - **Ship Tracking**: MarineTraffic
 
+## 🗺️ Roadmap: Features from WorldMonitor
+
+This project is based on the comprehensive [WorldMonitor](https://github.com/koala73/worldmonitor) geopolitical intelligence platform. Below are the major features that could be ported from WorldMonitor to HeatMap:
+
+### Data & Intelligence
+| Feature | Status | GitHub Issue |
+|---------|--------|--------------|
+| 170+ RSS feeds (vs ~10 current) | 🔴 Planned | [#1](https://github.com/AnilChinchawale/HeatMap/issues/1) |
+| Source tier system (1-4) | 🔴 Planned | [#1](https://github.com/AnilChinchawale/HeatMap/issues/1) |
+| Propaganda risk assessment | 🔴 Planned | [#1](https://github.com/AnilChinchawale/HeatMap/issues/1) |
+| AI Synthesis & Deduction | 🔴 Planned | [#9](https://github.com/AnilChinchawale/HeatMap/issues/9) |
+| Headline Memory (RAG) | 🔴 Planned | [#5](https://github.com/AnilChinchawale/HeatMap/issues/5) |
+| Country Instability Index (CII) | 🔴 Planned | [#6](https://github.com/AnilChinchawale/HeatMap/issues/6) |
+| 21 Language support | 🔴 Planned | [#7](https://github.com/AnilChinchawale/HeatMap/issues/7) |
+
+### Map Features
+| Feature | Status | GitHub Issue |
+|---------|--------|--------------|
+| 45+ map layers (vs ~10 current) | 🔴 Planned | [#2](https://github.com/AnilChinchawale/HeatMap/issues/2) |
+| Dual map engine (3D globe + flat) | 🔴 Planned | [#3](https://github.com/AnilChinchawale/HeatMap/issues/3) |
+| Day/night overlay | 🔴 Planned | [#3](https://github.com/AnilChinchawale/HeatMap/issues/3) |
+| Clustering & deconfliction | 🔴 Planned | [#2](https://github.com/AnilChinchawale/HeatMap/issues/2) |
+| URL state sharing | 🔴 Planned | [#2](https://github.com/AnilChinchawale/HeatMap/issues/2) |
+| CII choropleth heatmap | 🔴 Planned | [#6](https://github.com/AnilChinchawale/HeatMap/issues/6) |
+
+### AI/ML Features
+| Feature | Status | GitHub Issue |
+|---------|--------|--------------|
+| Local LLM support (Ollama/LM Studio) | 🔴 Planned | [#4](https://github.com/AnilChinchawale/HeatMap/issues/4) |
+| AI Deduction & Forecasting | 🔴 Planned | [#9](https://github.com/AnilChinchawale/HeatMap/issues/9) |
+| Headline Memory (RAG) | 🔴 Planned | [#5](https://github.com/AnilChinchawale/HeatMap/issues/5) |
+| Focal Point Detection | 🔴 Planned | [#9](https://github.com/AnilChinchawale/HeatMap/issues/9) |
+| Trending Keyword Spike Detection | 🔴 Planned | [#9](https://github.com/AnilChinchawale/HeatMap/issues/9) |
+
+### Infrastructure
+| Feature | Status | GitHub Issue |
+|---------|--------|--------------|
+| Desktop app (Tauri) | 🔴 Planned | [#8](https://github.com/AnilChinchawale/HeatMap/issues/8) |
+| PWA support with offline maps | 🔴 Planned | [#13](https://github.com/AnilChinchawale/HeatMap/issues/13) |
+| Redis caching layer | 🔴 Planned | [#11](https://github.com/AnilChinchawale/HeatMap/issues/11) |
+| Proto-first API contracts | 🔴 Planned | [#10](https://github.com/AnilChinchawale/HeatMap/issues/10) |
+
+### Variants
+| Feature | Status | GitHub Issue |
+|---------|--------|--------------|
+| Tech Monitor variant | 🔴 Planned | [#12](https://github.com/AnilChinchawale/HeatMap/issues/12) |
+| Finance Monitor variant | 🔴 Planned | [#12](https://github.com/AnilChinchawale/HeatMap/issues/12) |
+| Happy Monitor variant | 🔴 Planned | [#12](https://github.com/AnilChinchawale/HeatMap/issues/12) |
+
+### Legend
+- 🟢 Complete
+- 🟡 In Progress
+- 🔴 Planned
+
+---
+
 ## 🔗 Links
 
 - **Live Demo**: https://feed.xdc.network
-- **Repository**: https://github.com/your-username/xdc-world-feed
+- **Repository**: https://github.com/AnilChinchawale/HeatMap
+- **WorldMonitor Reference**: https://github.com/koala73/worldmonitor
 
 ---
 
