@@ -1,0 +1,76 @@
+export type Severity = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW' | 'INFO';
+
+export type SignalCategory = 
+  | 'conflict' 
+  | 'military' 
+  | 'diplomacy' 
+  | 'cyber' 
+  | 'disaster' 
+  | 'economy' 
+  | 'politics' 
+  | 'terrorism'
+  | 'protest'
+  | 'infrastructure';
+
+export interface Signal {
+  id: string;
+  title: string;
+  severity: Severity;
+  category: SignalCategory;
+  source: string;
+  sourceUrl?: string;
+  timeAgo: string;
+  timestamp: Date;
+  lat?: number;
+  lon?: number;
+  summary?: string;
+}
+
+export interface MarketData {
+  name: string;
+  symbol: string;
+  value: string;
+  change: string;
+  changePercent: string;
+  direction: 'up' | 'down';
+}
+
+export interface PredictionMarket {
+  id: string;
+  question: string;
+  probability: number;
+  change24h: number;
+  volume?: number;
+  source: 'Polymarket' | 'Kalshi';
+  category: string;
+}
+
+export interface ConflictMarker {
+  id: string;
+  lat: number;
+  lon: number;
+  name: string;
+  type: 'conflict' | 'military' | 'protest' | 'disaster' | 'infrastructure';
+  severity: Severity;
+  description?: string;
+  timestamp: Date;
+}
+
+export interface CountryRisk {
+  code: string;
+  name: string;
+  cii: number; // Country Instability Index 0-100
+  trend: 'rising' | 'falling' | 'stable';
+  activeConflicts: number;
+}
+
+export type ThreatLevel = 'LOW' | 'GUARDED' | 'ELEVATED' | 'HIGH' | 'SEVERE';
+
+export interface DashboardState {
+  threatLevel: ThreatLevel;
+  activeConflicts: number;
+  militaryAlerts: number;
+  lastUpdate: Date;
+  timeFilter: '1h' | '6h' | '24h' | '48h' | '7d';
+  activeLayers: string[];
+}

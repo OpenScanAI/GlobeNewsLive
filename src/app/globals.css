@@ -1,0 +1,354 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import 'react-grid-layout/css/styles.css';
+@import 'react-resizable/css/styles.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-void: #060810;
+  --bg-surface: #0a0e14;
+  --bg-elevated: #0f1520;
+  --bg-panel: #141e2a;
+  --border-subtle: rgba(42, 58, 74, 0.3);
+  --border-default: rgba(42, 58, 74, 0.5);
+  --text-primary: #eef2f6;
+  --text-secondary: #ccddee;
+  --text-muted: #8899aa;
+  --text-dim: #4a6a8a;
+  --accent-green: #00ff88;
+  --accent-blue: #00ccff;
+  --accent-red: #ff2244;
+  --accent-orange: #ff6633;
+  --accent-gold: #ffaa00;
+}
+
+/* ─── Light Mode Theme ──────────────────────────────────────────────── */
+html.light-mode {
+  --bg-void: #f0f2f5;
+  --bg-surface: #e8ecf0;
+  --bg-elevated: #ffffff;
+  --bg-panel: #f5f7fa;
+  --border-subtle: rgba(180, 200, 220, 0.5);
+  --border-default: rgba(160, 180, 200, 0.7);
+  --text-primary: #1a2332;
+  --text-secondary: #2a3a4a;
+  --text-muted: #4a6a8a;
+  --text-dim: #8899aa;
+  --accent-green: #00aa55;
+  --accent-blue: #0088cc;
+  --accent-red: #cc1133;
+  --accent-orange: #cc4400;
+  --accent-gold: #cc8800;
+}
+
+html.light-mode body {
+  background: var(--bg-void);
+  color: var(--text-primary);
+}
+
+html.light-mode .bg-\[\#0a0a0f\] {
+  background-color: #f5f7fa !important;
+}
+
+html.light-mode .bg-\[\#0f0f1a\] {
+  background-color: #eef1f5 !important;
+}
+
+html.light-mode .bg-\[\#12121a\] {
+  background-color: #ffffff !important;
+}
+
+html.light-mode .text-white {
+  color: #1a2332 !important;
+}
+
+html.light-mode .text-white\/90 {
+  color: rgba(26,35,50,0.9) !important;
+}
+
+html.light-mode .text-white\/60 {
+  color: rgba(26,35,50,0.6) !important;
+}
+
+html.light-mode .text-white\/40,
+html.light-mode .text-white\/35,
+html.light-mode .text-white\/30,
+html.light-mode .text-white\/25,
+html.light-mode .text-white\/20 {
+  color: rgba(26,35,50,0.4) !important;
+}
+
+html.light-mode .border-white\/10,
+html.light-mode .border-white\/5 {
+  border-color: rgba(26,35,50,0.1) !important;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-void);
+  color: var(--text-primary);
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-size: 12px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-surface);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-default);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-dim);
+}
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(255,34,68,0.3); }
+  50% { box-shadow: 0 0 20px rgba(255,34,68,0.6); }
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes borderPulse {
+  0%, 100% { border-color: rgba(0, 255, 136, 0.3); }
+  50% { border-color: rgba(0, 255, 136, 0.6); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes countUp {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-count-up {
+  animation: countUp 0.3s ease-out;
+}
+
+/* Mobile optimizations */
+@media (max-width: 1024px) {
+  .glass-panel {
+    border-radius: 6px;
+  }
+  
+  .font-mono {
+    font-size: 10px;
+  }
+}
+
+/* Smooth scrolling */
+* {
+  scroll-behavior: smooth;
+}
+
+/* TradingView widget dark mode fixes */
+.tradingview-widget-container {
+  background: var(--bg-void) !important;
+}
+
+.tradingview-widget-container iframe {
+  border-radius: 0 !important;
+}
+
+.animate-pulse-slow {
+  animation: pulse 2s infinite;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-glow-pulse {
+  animation: glowPulse 2s infinite;
+}
+
+/* Panel glass effect */
+.glass-panel {
+  background: rgba(10, 14, 20, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border-default);
+  border-radius: 8px;
+}
+
+/* Scanline overlay effect */
+.scanline-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0,255,136,0.1), transparent);
+  animation: scanline 8s linear infinite;
+  pointer-events: none;
+}
+
+/* MapLibre overrides */
+.maplibregl-map {
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+}
+.maplibregl-ctrl-attrib {
+  font-size: 9px !important;
+  background: rgba(10, 14, 20, 0.8) !important;
+  color: var(--text-dim) !important;
+}
+.maplibregl-ctrl-attrib a {
+  color: var(--text-muted) !important;
+}
+
+/* Dark popup styling */
+.maplibregl-popup-content {
+  background: var(--bg-panel) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-default) !important;
+  border-radius: 6px !important;
+  padding: 8px 12px !important;
+  font-size: 11px !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5) !important;
+}
+.maplibregl-popup-tip {
+  border-top-color: var(--bg-panel) !important;
+}
+.maplibregl-popup-close-button {
+  color: var(--text-muted) !important;
+  font-size: 16px !important;
+}
+.maplibregl-popup-close-button:hover {
+  color: var(--text-primary) !important;
+  background: transparent !important;
+}
+
+/* ─── Custom Dashboard (react-grid-layout) ─────────────────────────────────── */
+
+/* Grid placeholder/drop zone */
+.react-grid-placeholder {
+  background: rgba(0, 255, 136, 0.08) !important;
+  border: 1px dashed rgba(0, 255, 136, 0.3) !important;
+  border-radius: 8px !important;
+  opacity: 1 !important;
+}
+
+/* Remove react-resizable default handles; use custom ones */
+.react-resizable-handle {
+  width: 16px !important;
+  height: 16px !important;
+  bottom: 0 !important;
+  right: 0 !important;
+  cursor: se-resize !important;
+  background: none !important;
+  border: none !important;
+  z-index: 10;
+}
+
+.react-resizable-handle::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  border-bottom: 2px solid rgba(255, 170, 0, 0.5);
+  border-right: 2px solid rgba(255, 170, 0, 0.5);
+  border-radius: 0 0 2px 0;
+}
+
+.react-grid-item {
+  transition: none !important;
+}
+
+.react-grid-item.react-grid-placeholder {
+  background: rgba(0, 255, 136, 0.05) !important;
+  border: 1px dashed rgba(0, 255, 136, 0.25) !important;
+}
+
+/* Smooth dragging */
+.react-grid-item.react-draggable-dragging {
+  transition: none !important;
+  z-index: 100 !important;
+  opacity: 0.9 !important;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,170,0,0.3) !important;
+}
+
+/* Smooth resizing */
+.react-grid-item.resizing {
+  opacity: 0.95 !important;
+  z-index: 100 !important;
+}
+
+/* Custom scrollbar for dashboard */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Widget panel - overflow clip for children */
+.widget-panel > div:last-child {
+  overflow: hidden;
+}
+
+/* Light theme overrides */
+.light-theme {
+  --bg-panel-lm: #ffffff;
+  --text-lm: #1a1a2e;
+}
