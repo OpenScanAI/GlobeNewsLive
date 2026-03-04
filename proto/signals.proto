@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+package worldmonitor.signals.v1;
+
+option go_package = "github.com/worldmonitor/api/go/signals";
+
+// Signal represents a single intelligence signal
+message Signal {
+  string id = 1;
+  string title = 2;
+  string summary = 3;
+  string source = 4;
+  string source_url = 5;
+  Severity severity = 6;
+  Category category = 7;
+  string region = 8;
+  int64 timestamp = 9;
+  string time_ago = 10;
+  
+  // Optional geolocation
+  double lat = 11;
+  double lon = 12;
+  
+  // AI-generated metadata
+  repeated string entities = 13;
+  float sentiment_score = 14;
+  repeated string related_signals = 15;
+}
+
+enum Severity {
+  SEVERITY_UNSPECIFIED = 0;
+  SEVERITY_INFO = 1;
+  SEVERITY_LOW = 2;
+  SEVERITY_MEDIUM = 3;
+  SEVERITY_HIGH = 4;
+  SEVERITY_CRITICAL = 5;
+}
+
+enum Category {
+  CATEGORY_UNSPECIFIED = 0;
+  CATEGORY_CONFLICT = 1;
+  CATEGORY_MILITARY = 2;
+  CATEGORY_DIPLOMACY = 3;
+  CATEGORY_CYBER = 4;
+  CATEGORY_DISASTER = 5;
+  CATEGORY_ECONOMY = 6;
+  CATEGORY_POLITICS = 7;
+  CATEGORY_TERRORISM = 8;
+  CATEGORY_PROTEST = 9;
+  CATEGORY_INFRASTRUCTURE = 10;
+}
+
+// Request/Response messages
+message ListSignalsRequest {
+  string filter = 1;
+  string category = 2;
+  string region = 3;
+  int32 limit = 4;
+  int64 since = 5;
+}
+
+message ListSignalsResponse {
+  repeated Signal signals = 1;
+  int32 total = 2;
+  bool cached = 3;
+  int64 timestamp = 4;
+}
+
+message GetSignalRequest {
+  string id = 1;
+}
+
+message GetSignalResponse {
+  Signal signal = 1;
+  repeated Signal related_signals = 2;
+}
+
+// Service definition
+service SignalsService {
+  rpc ListSignals(ListSignalsRequest) returns (ListSignalsResponse);
+  rpc GetSignal(GetSignalRequest) returns (GetSignalResponse);
+  rpc StreamSignals(ListSignalsRequest) returns (stream Signal);
+}
