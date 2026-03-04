@@ -567,7 +567,7 @@ export default function CustomDashboard({
   return (
     <DashboardErrorBoundary>
     <div
-      className={`flex flex-col h-full ${settings.theme === 'light' ? 'light-theme' : ''}`}
+      className={`flex flex-col h-full w-full ${settings.theme === 'light' ? 'light-theme' : ''}`}
       style={{ background: settings.theme === 'light' ? '#f0f4f8' : undefined }}
     >
       {/* ── Dashboard Toolbar ─────────────────────────────────────────── */}
