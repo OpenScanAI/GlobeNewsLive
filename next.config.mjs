@@ -1,57 +1,33 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  experimental: {
-    serverActions: { bodySizeLimit: '2mb' }
+  output: 'export',
+  distDir: 'dist',
+  images: {
+    unoptimized: true,
   },
-  // Prevent aggressive caching of HTML pages
+  trailingSlash: true,
   async headers() {
     return [
       {
-        source: '/',
+        source: '/sw.js',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'no-cache, no-store, must-revalidate',
-          },
-          {
-            key: 'Pragma',
-            value: 'no-cache',
-          },
-          {
-            key: 'Expires',
-            value: '0',
+            value: 'public, max-age=0, must-revalidate',
           },
         ],
       },
       {
-        source: '/:path*',
-        headers: [
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'X-Frame-Options',
-            value: 'SAMEORIGIN',
-          },
-          {
-            key: 'X-XSS-Protection',
-            value: '1; mode=block',
-          },
-        ],
-      },
-      {
-        // API routes should have short cache
-        source: '/api/:path*',
+        source: '/manifest.json',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=60, stale-while-revalidate=300',
+            value: 'public, max-age=0, must-revalidate',
           },
         ],
       },
     ];
   },
 };
-export default nextConfig;
+
+module.exports = nextConfig;

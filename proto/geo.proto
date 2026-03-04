@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+package worldmonitor.geo.v1;
+
+option go_package = "github.com/worldmonitor/api/go/geo";
+
+// Geographic feature for map display
+message GeoFeature {
+  string id = 1;
+  string name = 2;
+  string type = 3;
+  double lat = 4;
+  double lon = 5;
+  map<string, string> properties = 6;
+  string layer = 7;
+}
+
+// Layer definition
+message Layer {
+  string key = 1;
+  string label = 2;
+  string icon = 3;
+  bool enabled = 4;
+  int32 priority = 5;
+}
+
+// Country Instability Index data
+message CountryInstability {
+  string country_code = 1;
+  string country_name = 2;
+  double cii_score = 3;
+  string trend = 4;
+  double change_7d = 5;
+  double change_30d = 6;
+  int32 active_conflicts = 7;
+  repeated RiskFactor risk_factors = 8;
+}
+
+message RiskFactor {
+  string type = 1;
+  double severity = 2;
+  string description = 3;
+}
+
+// Request/Response messages
+message ListLayersRequest {
+  string variant = 1;
+}
+
+message ListLayersResponse {
+  repeated Layer layers = 1;
+}
+
+message GetFeaturesRequest {
+  repeated string layers = 1;
+  double bbox_north = 2;
+  double bbox_south = 3;
+  double bbox_east = 4;
+  double bbox_west = 5;
+}
+
+message GetFeaturesResponse {
+  repeated GeoFeature features = 1;
+}
+
+message GetCIIRequest {
+  repeated string country_codes = 1;
+}
+
+message GetCIIResponse {
+  repeated CountryInstability countries = 1;
+  int64 timestamp = 2;
+}
+
+// Service definition
+service GeoService {
+  rpc ListLayers(ListLayersRequest) returns (ListLayersResponse);
+  rpc GetFeatures(GetFeaturesRequest) returns (GetFeaturesResponse);
+  rpc GetCII(GetCIIRequest) returns (GetCIIResponse);
+  rpc StreamFeatures(GetFeaturesRequest) returns (stream GeoFeature);
+}

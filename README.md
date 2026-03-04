@@ -1,49 +1,54 @@
-# 🌐 XDC World Feed
+# 🌐 WorldMonitor - Global Intelligence Platform
 
-**Real-time global conflict intelligence dashboard. Open source. No login required.**
+**Real-time geopolitical intelligence with 170+ sources, 45+ map layers, and AI synthesis. Open source. No login required.**
 
-[![Live Demo](https://img.shields.io/badge/demo-live-green)](https://feed.xdc.network)
+[![Live Demo](https://img.shields.io/badge/demo-live-green)](https://worldmonitor.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org)
 
-![XDC World Feed Screenshot](https://feed.xdc.network/og-image.png)
+![WorldMonitor Screenshot](https://worldmonitor.com/og-image.png)
 
 ## 🚀 Features
 
 ### Real-Time Intelligence
-- **📡 Signal Feed** — Live news from Reuters, BBC, Al Jazeera, Guardian, France24, DW News, Defense One, Breaking Defense
-- **🎯 Threat Classification** — Auto-classifies news as CRITICAL, HIGH, MEDIUM, LOW using keyword analysis
+- **📡 Signal Feed** — Live news from 170+ sources including Reuters, BBC, Al Jazeera, Defense One, and more
+- **🎯 Threat Classification** — Auto-classifies news as CRITICAL, HIGH, MEDIUM, LOW using AI
 - **⚠️ Breaking Alerts** — Flashing banner for critical events with optional sound alerts
-- **🧠 AI Situation Briefs** — Algorithm-generated intelligence summaries with threat assessments (v2.0)
+- **🧠 AI Synthesis** — LLM-powered intelligence summaries with sentiment analysis
+- **🔍 Headline Memory** — Vector-based RAG search across historical headlines
+- **📊 Country Instability Index** — Real-time CII scores with choropleth visualization
 
-### Interactive Map
-- **🗺️ World Map** — Dark-themed MapLibre GL with multiple layers
-- **🌍 3D Globe** — Three.js rotating earth with live conflict pins (War Room mode)
-- **⚔️ Conflict Zones** — 10 active conflict markers (Ukraine, Gaza, Sudan, etc.)
+### Interactive Maps
+- **🗺️ Dual Map Engine** — Flat map (deck.gl) + 3D Globe (Three.js)
+- **🌍 45+ Map Layers** — Conflicts, military bases, nuclear sites, cables, pipelines, datacenters
+- **🌓 Day/Night Overlay** — Real-time terminator line
+- **📈 CII Choropleth** — Country Instability Index heatmap
+- **⚔️ Conflict Zones** — 10 active conflict markers with intensity levels
 - **🎖️ Military Bases** — 15 US/NATO bases worldwide
-- **⚓ Strategic Chokepoints** — Strait of Hormuz, Suez, Malacca, etc.
-- **🌍 Earthquakes** — Live USGS data (M4.5+ past 24h)
+- **⚓ Strategic Chokepoints** — Strait of Hormuz, Suez, Malacca, Taiwan Strait
 
-### War Room Mode
-- **⚔️ Theater Selector** — Focus on Global, Ukraine, Middle East, Sahel/Sudan, Asia-Pacific
-- **🌐 Live 3D Globe** — Interactive Three.js globe with auto-rotation
-- **📊 Conflict Stats** — Active wars, insurgencies, high intensity zones
-- **🔴 ACLED-style Events** — Real conflict event feed by theater
+### AI-Powered Analysis
+- **🤖 Local LLM Support** — Ollama and LM Studio integration
+- **📝 AI Synthesis** — Multi-source headline summarization
+- **🔮 Deduction Engine** — Situation analysis and forecasting
+- **💾 Headline Memory** — Semantic search with vector embeddings
+- **🎯 Focal Point Detection** — Automatic hotspot identification
 
-### Market Intelligence
-- **📈 Live Markets** — S&P 500, Oil, Gold, EUR/USD, BTC, ETH
-- **📊 Trading Charts** — TradingView widget with Gold, Silver, Bitcoin, Oil, S&P 500
-- **🎯 Prediction Markets** — Polymarket geopolitical contracts with probability bars
+### Multi-Language Support
+- **🌍 21 Languages** — English, Arabic, Spanish, French, German, Chinese, Japanese, Korean, Russian, Portuguese, Italian, Dutch, Turkish, Polish, Swedish, Hindi, Vietnamese, Thai, Hebrew, Greek
+- **↔️ RTL Support** — Full right-to-left language support
 
-### Tracking
-- **✈️ Flight Tracking** — ADS-B Exchange embed (military + civilian)
-- **🚢 Ship Tracking** — MarineTraffic embed (Strait of Hormuz focus)
-- **🌍 Earthquake Monitor** — USGS live feed with magnitude badges
+### Platform Variants
+- **🌐 WorldMonitor** — Full geopolitical intelligence
+- **💻 TechMonitor** — Startup ecosystem and AI news
+- **📈 FinanceMonitor** — Markets, trading, and economic data
+- **😊 HappyMonitor** — Positive news and acts of kindness
 
-### Mobile Responsive
-- **📱 4-tab mobile layout** — Feed / Map / Markets / Track
-- **🔔 Push-style badges** — Critical count on mobile nav
-- **👆 Touch-optimized** — Larger tap targets, swipeable panels
+### Infrastructure
+- **💻 Desktop App** — Tauri-based native app (Windows, macOS, Linux)
+- **📱 PWA** — Progressive Web App with offline support
+- **⚡ Redis Caching** — High-performance caching layer
+- **🔌 Proto-first API** — gRPC/Protocol Buffer contracts
 
 ## 🛠️ Tech Stack
 
@@ -51,23 +56,28 @@
 |-------|------------|
 | Framework | Next.js 14 (App Router) |
 | Styling | Tailwind CSS |
-| Map | MapLibre GL JS + Carto dark tiles |
-| Charts | TradingView Widget |
+| Maps | MapLibre GL + deck.gl |
+| 3D Globe | Three.js + React Three Fiber |
 | State | React Hooks + SWR |
-| Hosting | Any Node.js server + nginx |
+| AI/ML | Local LLM (Ollama/LM Studio) |
+| Cache | Upstash Redis |
+| Desktop | Tauri |
+| Protocol | gRPC / Protocol Buffers |
 
 ## 📦 Installation
 
 ### Prerequisites
 - Node.js 18+
 - npm or yarn
+- (Optional) Ollama for local LLM
+- (Optional) Redis for caching
 
 ### Quick Start
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/xdc-world-feed.git
-cd xdc-world-feed
+git clone https://github.com/worldmonitor/app.git
+cd app
 
 # Install dependencies
 npm install
@@ -78,33 +88,34 @@ npm run dev
 # Open http://localhost:3400
 ```
 
-### Production Build
+### Environment Variables
 
 ```bash
-# Build for production
-npm run build
+# Redis (optional)
+UPSTASH_REDIS_REST_URL=your-redis-url
+UPSTASH_REDIS_REST_TOKEN=your-redis-token
 
-# Start production server
-npm start
+# Local LLM (optional)
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama3.2
+
+# Site Variant (optional)
+NEXT_PUBLIC_SITE_VARIANT=full|tech|finance|happy
 ```
 
 ## 🚀 Deployment
 
-### Option 1: PM2 (Recommended)
+### Vercel (Recommended)
 
 ```bash
-# Build the app
-npm run build
+# Install Vercel CLI
+npm i -g vercel
 
-# Start with PM2
-pm2 start npm --name "xdc-world-feed" -- start
-
-# Save PM2 config
-pm2 save
-pm2 startup
+# Deploy
+vercel
 ```
 
-### Option 2: Docker
+### Docker
 
 ```dockerfile
 FROM node:20-alpine
@@ -117,105 +128,96 @@ EXPOSE 3400
 CMD ["npm", "start"]
 ```
 
-### Nginx Configuration
-
-```nginx
-server {
-    server_name feed.xdc.network;
-
-    location /.well-known/acme-challenge/ {
-        root /var/www/html;
-    }
-
-    location / {
-        proxy_pass http://127.0.0.1:3400;
-        proxy_http_version 1.1;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-        proxy_read_timeout 86400s;
-    }
-
-    listen 443 ssl;
-    ssl_certificate /etc/letsencrypt/live/feed.xdc.network/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/feed.xdc.network/privkey.pem;
-}
-
-server {
-    listen 80;
-    server_name feed.xdc.network;
-    return 301 https://$host$request_uri;
-}
-```
-
-### SSL with Certbot
+### Desktop App (Tauri)
 
 ```bash
-certbot certonly --webroot -w /var/www/html -d feed.xdc.network
+# Install Rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# Install Tauri CLI
+cargo install tauri-cli
+
+# Build desktop app
+cargo tauri build
 ```
 
-## 📡 Public API (v2.0)
+## 📡 Public API
 
 All endpoints are free, no API key required.
 
 ```bash
 # Get live signals
-curl https://feed.xdc.network/api/signals
+curl https://worldmonitor.com/api/signals
+
+# Get signals with filter
+curl "https://worldmonitor.com/api/signals?filter=iran"
 
 # Get AI situation brief
-curl https://feed.xdc.network/api/brief
+curl https://worldmonitor.com/api/brief
 
 # Get market data
-curl https://feed.xdc.network/api/markets
+curl https://worldmonitor.com/api/markets
 
 # Get conflict events
-curl https://feed.xdc.network/api/conflicts
+curl https://worldmonitor.com/api/conflicts
+
+# Get CII data
+curl https://worldmonitor.com/api/cii
 
 # Get earthquake data
-curl https://feed.xdc.network/api/earthquakes
-
-# Get full API documentation
-curl https://feed.xdc.network/api/docs
+curl https://worldmonitor.com/api/earthquakes
 ```
 
 ### Response Examples
 
-**GET /api/brief**
+**GET /api/signals**
 ```json
 {
-  "brief": {
-    "threatLevel": "SEVERE",
-    "headline": "Major escalation in Middle East...",
-    "summary": "Current tracking: 3 military, 8 geopolitical signals...",
-    "keyDevelopments": [
-      { "region": "MIDDLE EAST", "headline": "...", "severity": "CRITICAL" }
-    ],
-    "watchList": ["Elevated military activity..."],
-    "marketImplications": "Risk-off sentiment likely...",
-    "nextHours": "Recommend elevated alert status..."
-  }
+  "signals": [
+    {
+      "id": "abc123",
+      "title": "Major military operation begins...",
+      "severity": "CRITICAL",
+      "category": "military",
+      "source": "Reuters",
+      "timestamp": "2024-01-15T10:30:00Z",
+      "region": "middleeast"
+    }
+  ],
+  "cached": false,
+  "sources": { "success": 45, "failed": 5, "total": 50 }
+}
+```
+
+**GET /api/cii**
+```json
+{
+  "countries": [
+    {
+      "code": "SY",
+      "name": "Syria",
+      "cii": 95,
+      "trend": "rising",
+      "change7d": 2,
+      "activeConflicts": 3,
+      "riskFactors": [
+        { "type": "conflict", "severity": 10, "description": "Ongoing civil war" }
+      ]
+    }
+  ]
 }
 ```
 
 ## 📊 Data Sources
 
-| Source | Data | Refresh |
-|--------|------|---------|
-| Reuters RSS | World news | 60s |
-| BBC World RSS | World news | 60s |
-| Al Jazeera RSS | World news | 60s |
-| Guardian RSS | World news | 60s |
-| France24 RSS | World news | 60s |
-| DW News RSS | World news | 60s |
-| Defense One RSS | Defense news | 60s |
-| Breaking Defense RSS | Defense news | 60s |
-| BleepingComputer RSS | Cyber news | 60s |
-| CoinGecko API | Crypto prices | 30s |
-| Polymarket API | Prediction markets | 60s |
-| USGS API | Earthquakes | 120s |
+| Source | Data | Count |
+|--------|------|-------|
+| RSS Feeds | World news | 170+ |
+| Map Layers | Geospatial | 45+ |
+| Military Bases | Locations | 15 |
+| Conflict Zones | Active | 10 |
+| Nuclear Sites | Facilities | 5 |
+| CII Data | Countries | 20+ |
 
 **Total API cost: $0/month** — All sources are free.
 
@@ -223,79 +225,77 @@ curl https://feed.xdc.network/api/docs
 
 ### Adding News Sources
 
-Edit `src/app/api/signals/route.ts`:
+Edit `src/config/feeds.ts`:
 
 ```typescript
-const FEEDS = [
-  { name: 'Your Source', url: 'https://example.com/rss', tier: 2 },
-  // ...
-];
+export const FULL_FEEDS = {
+  mycategory: [
+    { name: 'My Source', url: rss('https://example.com/rss') },
+  ],
+};
 ```
 
 ### Adding Map Layers
 
-Edit `src/lib/feeds.ts` to add:
-- Military bases
-- Conflict zones
-- Strategic chokepoints
-
-### Changing Threat Keywords
-
-Edit `src/lib/classify.ts`:
+Edit `src/config/map-layers.ts`:
 
 ```typescript
-const THREAT_KEYWORDS = {
-  CRITICAL: ['nuclear', 'invasion', ...],
-  HIGH: ['airstrike', 'missile', ...],
-  // ...
+export const LAYER_REGISTRY = {
+  mylayer: {
+    key: 'mylayer',
+    icon: '📍',
+    label: 'My Layer',
+    renderers: ['flat', 'globe'],
+    variant: ['full'],
+  },
+};
+```
+
+### Creating a Variant
+
+Edit `src/config/variant.ts`:
+
+```typescript
+export const VARIANT_FEATURES = {
+  myvariant: ['Feature 1', 'Feature 2'],
 };
 ```
 
 ## 📁 Project Structure
 
 ```
-xdc-world-feed/
+worldmonitor/
 ├── src/
 │   ├── app/
-│   │   ├── page.tsx           # Main dashboard
-│   │   ├── layout.tsx         # Root layout
-│   │   ├── globals.css        # Global styles
-│   │   └── api/
-│   │       ├── signals/       # RSS aggregation
-│   │       ├── markets/       # Market data
-│   │       ├── predictions/   # Polymarket
-│   │       └── earthquakes/   # USGS data
-│   ├── components/
-│   │   ├── Header.tsx         # Top bar with threat level
-│   │   ├── SignalFeed.tsx     # News feed
-│   │   ├── WorldMap.tsx       # MapLibre map
-│   │   ├── MarketTicker.tsx   # Market prices
-│   │   ├── PredictionPanel.tsx # Prediction markets
-│   │   ├── TrackingPanel.tsx  # Flights/Ships/Quakes
-│   │   ├── TradingChart.tsx   # TradingView widget
-│   │   ├── MobileNav.tsx      # Mobile navigation
-│   │   └── StatsBar.tsx       # Footer stats
+│   │   ├── page.tsx              # Main dashboard
+│   │   ├── layout.tsx            # Root layout
+│   │   ├── api/                  # API routes
+│   │   │   ├── signals/          # RSS aggregation
+│   │   │   ├── markets/          # Market data
+│   │   │   ├── cii/              # Country Instability Index
+│   │   │   └── rss-proxy/        # RSS proxy
+│   │   └── ...
+│   ├── components/               # React components
+│   ├── config/
+│   │   ├── feeds.ts              # 170+ RSS sources
+│   │   ├── map-layers.ts         # 45+ map layers
+│   │   └── variant.ts            # Site variants
 │   ├── lib/
-│   │   ├── classify.ts        # Threat classification
-│   │   └── feeds.ts           # Static data
+│   │   ├── redis.ts              # Redis client
+│   │   └── classify.ts           # Threat classification
+│   ├── locales/                  # 21 language translations
+│   ├── services/
+│   │   ├── ai-synthesis.ts       # AI synthesis engine
+│   │   ├── headline-memory.ts    # RAG vector search
+│   │   └── cii.ts                # Country Instability Index
 │   └── types/
-│       └── index.ts           # TypeScript types
-├── public/                    # Static assets
-├── package.json
-├── tailwind.config.ts
-├── next.config.mjs
-└── README.md
-```
-
-## 🔧 Environment Variables
-
-No environment variables required for basic operation.
-
-Optional:
-```env
-# For enhanced features (not required)
-GROQ_API_KEY=xxx          # AI classification (optional)
-NASA_FIRMS_KEY=xxx        # Fire data (optional)
+│       └── index.ts              # TypeScript types
+├── proto/                        # Protocol Buffer definitions
+├── src-tauri/                    # Tauri desktop app
+├── public/
+│   ├── manifest.json             # PWA manifest
+│   └── sw.js                     # Service Worker
+└── ...
 ```
 
 ## 🤝 Contributing
@@ -312,75 +312,16 @@ MIT License — see [LICENSE](LICENSE) file.
 
 ## 🙏 Credits
 
-- **News Sources**: Reuters, BBC, Al Jazeera, Guardian, France24, DW, Defense One, Breaking Defense
-- **Map**: MapLibre GL + Carto dark tiles
-- **Charts**: TradingView
-- **Markets**: CoinGecko, Polymarket
-- **Earthquakes**: USGS
-- **Flight Tracking**: ADS-B Exchange
-- **Ship Tracking**: MarineTraffic
-
-## 🗺️ Roadmap: Features from WorldMonitor
-
-This project is based on the comprehensive [WorldMonitor](https://github.com/koala73/worldmonitor) geopolitical intelligence platform. Below are the major features that could be ported from WorldMonitor to HeatMap:
-
-### Data & Intelligence
-| Feature | Status | GitHub Issue |
-|---------|--------|--------------|
-| 170+ RSS feeds (vs ~10 current) | 🔴 Planned | [#1](https://github.com/AnilChinchawale/HeatMap/issues/1) |
-| Source tier system (1-4) | 🔴 Planned | [#1](https://github.com/AnilChinchawale/HeatMap/issues/1) |
-| Propaganda risk assessment | 🔴 Planned | [#1](https://github.com/AnilChinchawale/HeatMap/issues/1) |
-| AI Synthesis & Deduction | 🔴 Planned | [#9](https://github.com/AnilChinchawale/HeatMap/issues/9) |
-| Headline Memory (RAG) | 🔴 Planned | [#5](https://github.com/AnilChinchawale/HeatMap/issues/5) |
-| Country Instability Index (CII) | 🔴 Planned | [#6](https://github.com/AnilChinchawale/HeatMap/issues/6) |
-| 21 Language support | 🔴 Planned | [#7](https://github.com/AnilChinchawale/HeatMap/issues/7) |
-
-### Map Features
-| Feature | Status | GitHub Issue |
-|---------|--------|--------------|
-| 45+ map layers (vs ~10 current) | 🔴 Planned | [#2](https://github.com/AnilChinchawale/HeatMap/issues/2) |
-| Dual map engine (3D globe + flat) | 🔴 Planned | [#3](https://github.com/AnilChinchawale/HeatMap/issues/3) |
-| Day/night overlay | 🔴 Planned | [#3](https://github.com/AnilChinchawale/HeatMap/issues/3) |
-| Clustering & deconfliction | 🔴 Planned | [#2](https://github.com/AnilChinchawale/HeatMap/issues/2) |
-| URL state sharing | 🔴 Planned | [#2](https://github.com/AnilChinchawale/HeatMap/issues/2) |
-| CII choropleth heatmap | 🔴 Planned | [#6](https://github.com/AnilChinchawale/HeatMap/issues/6) |
-
-### AI/ML Features
-| Feature | Status | GitHub Issue |
-|---------|--------|--------------|
-| Local LLM support (Ollama/LM Studio) | 🔴 Planned | [#4](https://github.com/AnilChinchawale/HeatMap/issues/4) |
-| AI Deduction & Forecasting | 🔴 Planned | [#9](https://github.com/AnilChinchawale/HeatMap/issues/9) |
-| Headline Memory (RAG) | 🔴 Planned | [#5](https://github.com/AnilChinchawale/HeatMap/issues/5) |
-| Focal Point Detection | 🔴 Planned | [#9](https://github.com/AnilChinchawale/HeatMap/issues/9) |
-| Trending Keyword Spike Detection | 🔴 Planned | [#9](https://github.com/AnilChinchawale/HeatMap/issues/9) |
-
-### Infrastructure
-| Feature | Status | GitHub Issue |
-|---------|--------|--------------|
-| Desktop app (Tauri) | 🔴 Planned | [#8](https://github.com/AnilChinchawale/HeatMap/issues/8) |
-| PWA support with offline maps | 🔴 Planned | [#13](https://github.com/AnilChinchawale/HeatMap/issues/13) |
-| Redis caching layer | 🔴 Planned | [#11](https://github.com/AnilChinchawale/HeatMap/issues/11) |
-| Proto-first API contracts | 🔴 Planned | [#10](https://github.com/AnilChinchawale/HeatMap/issues/10) |
-
-### Variants
-| Feature | Status | GitHub Issue |
-|---------|--------|--------------|
-| Tech Monitor variant | 🔴 Planned | [#12](https://github.com/AnilChinchawale/HeatMap/issues/12) |
-| Finance Monitor variant | 🔴 Planned | [#12](https://github.com/AnilChinchawale/HeatMap/issues/12) |
-| Happy Monitor variant | 🔴 Planned | [#12](https://github.com/AnilChinchawale/HeatMap/issues/12) |
-
-### Legend
-- 🟢 Complete
-- 🟡 In Progress
-- 🔴 Planned
-
----
+- **News Sources**: 170+ RSS feeds from major outlets
+- **Maps**: MapLibre GL, deck.gl, Carto tiles
+- **AI**: Ollama, LM Studio
+- **Data**: USGS, ACLED, various open sources
 
 ## 🔗 Links
 
-- **Live Demo**: https://feed.xdc.network
-- **Repository**: https://github.com/AnilChinchawale/HeatMap
-- **WorldMonitor Reference**: https://github.com/koala73/worldmonitor
+- **Live Demo**: https://worldmonitor.com
+- **Repository**: https://github.com/worldmonitor/app
+- **Documentation**: https://docs.worldmonitor.com
 
 ---
 
