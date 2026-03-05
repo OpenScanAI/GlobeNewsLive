@@ -315,11 +315,6 @@ body {
   background: transparent !important;
 }
 
-/* Smooth flight marker transitions */
-.maplibregl-marker {
-  transition: transform 4s linear !important;
-}
-
 /* ─── Custom Dashboard (react-grid-layout) ─────────────────────────────────── */
 
 /* Grid placeholder/drop zone */
