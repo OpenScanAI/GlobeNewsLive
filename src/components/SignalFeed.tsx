@@ -154,9 +154,30 @@ export default function SignalFeed({ signals, loading, onSignalClick }: SignalFe
   const [scrollTop, setScrollTop] = useState(0);
   const [containerHeight, setContainerHeight] = useState(600);
 
+  // Auto-scroll state
+  const [autoScrollEnabled, setAutoScrollEnabled] = useState(true);
+  const isHoveredRef = useRef(false);
+  const isManualScrollRef = useRef(false);
+  const manualScrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const lastScrollTimeRef = useRef(0);
+
   const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
-    setScrollTop(e.currentTarget.scrollTop);
-  }, []);
+    const el = e.currentTarget;
+    setScrollTop(el.scrollTop);
+
+    // Detect manual scroll (not triggered by our rAF)
+    const now = Date.now();
+    const timeSinceLast = now - lastScrollTimeRef.current;
+    // If scroll happens very quickly after our rAF tick, it's likely ours
+    if (timeSinceLast > 50 && autoScrollEnabled) {
+      isManualScrollRef.current = true;
+      if (manualScrollTimeoutRef.current) clearTimeout(manualScrollTimeoutRef.current);
+      manualScrollTimeoutRef.current = setTimeout(() => {
+        isManualScrollRef.current = false;
+      }, 3000);
+    }
+  }, [autoScrollEnabled]);
 
   useEffect(() => {
     if (!listRef.current) return;
@@ -167,6 +188,42 @@ export default function SignalFeed({ signals, loading, onSignalClick }: SignalFe
     setContainerHeight(listRef.current.clientHeight);
     return () => obs.disconnect();
   }, []);
+
+  // Auto-scroll loop
+  useEffect(() => {
+    if (!listRef.current || !autoScrollEnabled) return;
+    const el = listRef.current;
+    let lastTimestamp = 0;
+    let bottomPauseUntil = 0;
+
+    const tick = (timestamp: number) => {
+      if (!lastTimestamp) lastTimestamp = timestamp;
+      const delta = timestamp - lastTimestamp;
+      lastTimestamp = timestamp;
+
+      const shouldPause = isHoveredRef.current || isManualScrollRef.current;
+      const now = Date.now();
+
+      if (!shouldPause && now > bottomPauseUntil && el.scrollHeight > el.clientHeight) {
+        const speed = 0.04; // px per ms (~2.4px/sec)
+        el.scrollTop += delta * speed;
+        lastScrollTimeRef.current = now;
+
+        // Near bottom -> pause then loop to top
+        if (el.scrollTop + el.clientHeight >= el.scrollHeight - 2) {
+          bottomPauseUntil = now + 2000; // 2s pause at bottom
+          el.scrollTop = 0;
+        }
+      }
+
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [autoScrollEnabled]);
 
   // Track new signals
   useEffect(() => {
@@ -237,6 +294,17 @@ export default function SignalFeed({ signals, loading, onSignalClick }: SignalFe
           {loading && (
             <span className="text-accent-gold text-[10px] animate-pulse">⟳</span>
           )}
+          <button
+            onClick={() => setAutoScrollEnabled(v => !v)}
+            className={`px-1.5 py-0.5 rounded text-[8px] font-mono font-bold tracking-wider transition-all ${
+              autoScrollEnabled
+                ? 'bg-accent-green/20 text-accent-green'
+                : 'bg-white/5 text-text-dim hover:text-white'
+            }`}
+            title={autoScrollEnabled ? 'Auto-scroll on' : 'Auto-scroll off'}
+          >
+            {autoScrollEnabled ? '▶ AUTO' : '⏸ MANUAL'}
+          </button>
         </div>
       </div>
 
@@ -280,6 +348,8 @@ export default function SignalFeed({ signals, loading, onSignalClick }: SignalFe
         id="signal-feed"
         className="flex-1 overflow-y-auto px-2" 
         onScroll={handleScroll}
+        onMouseEnter={() => { isHoveredRef.current = true; }}
+        onMouseLeave={() => { isHoveredRef.current = false; }}
         style={{ willChange: 'transform' }}
       >
         {loading && signals.length === 0 ? (
