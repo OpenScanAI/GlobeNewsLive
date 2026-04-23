@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package worldmonitor.markets.v1;
+
+option go_package = "github.com/worldmonitor/api/go/markets";
+
+// Market data for a single symbol
+message MarketData {
+  string symbol = 1;
+  string name = 2;
+  double price = 3;
+  double change = 4;
+  double change_percent = 5;
+  int64 timestamp = 6;
+  int64 volume = 7;
+  double high_24h = 8;
+  double low_24h = 9;
+  MarketType type = 10;
+}
+
+enum MarketType {
+  MARKET_TYPE_UNSPECIFIED = 0;
+  MARKET_TYPE_EQUITY = 1;
+  MARKET_TYPE_CRYPTO = 2;
+  MARKET_TYPE_FOREX = 3;
+  MARKET_TYPE_COMMODITY = 4;
+  MARKET_TYPE_BOND = 5;
+  MARKET_TYPE_INDEX = 6;
+}
+
+// Request/Response messages
+message ListMarketsRequest {
+  MarketType type = 1;
+  repeated string symbols = 2;
+}
+
+message ListMarketsResponse {
+  repeated MarketData markets = 1;
+  int64 timestamp = 2;
+}
+
+message GetMarketRequest {
+  string symbol = 1;
+}
+
+message GetMarketResponse {
+  MarketData market = 1;
+}
+
+// Service definition
+service MarketsService {
+  rpc ListMarkets(ListMarketsRequest) returns (ListMarketsResponse);
+  rpc GetMarket(GetMarketRequest) returns (GetMarketResponse);
+  rpc StreamMarkets(ListMarketsRequest) returns (stream MarketData);
+}

@@ -24,6 +24,11 @@ export interface Signal {
   lat?: number;
   lon?: number;
   summary?: string;
+  region?: string;
+  // AI metadata
+  entities?: string[];
+  sentimentScore?: number;
+  relatedSignals?: string[];
 }
 
 export interface MarketData {
@@ -33,6 +38,11 @@ export interface MarketData {
   change: string;
   changePercent: string;
   direction: 'up' | 'down';
+  price?: number;
+  volume?: number;
+  high24h?: number;
+  low24h?: number;
+  type?: 'equity' | 'crypto' | 'forex' | 'commodity' | 'bond' | 'index';
 }
 
 export interface PredictionMarket {
@@ -62,6 +72,15 @@ export interface CountryRisk {
   cii: number; // Country Instability Index 0-100
   trend: 'rising' | 'falling' | 'stable';
   activeConflicts: number;
+  change7d?: number;
+  change30d?: number;
+  riskFactors?: RiskFactor[];
+}
+
+export interface RiskFactor {
+  type: 'conflict' | 'political' | 'economic' | 'social' | 'environmental' | 'humanitarian';
+  severity: number;
+  description: string;
 }
 
 export type ThreatLevel = 'LOW' | 'GUARDED' | 'ELEVATED' | 'HIGH' | 'SEVERE';
@@ -73,4 +92,45 @@ export interface DashboardState {
   lastUpdate: Date;
   timeFilter: '1h' | '6h' | '24h' | '48h' | '7d';
   activeLayers: string[];
+}
+
+export interface GeoFeature {
+  id: string;
+  name: string;
+  type: string;
+  lat: number;
+  lon: number;
+  properties: Record<string, string>;
+  layer: string;
+}
+
+export interface MapLayer {
+  key: string;
+  label: string;
+  icon: string;
+  enabled: boolean;
+  renderers: ('flat' | 'globe')[];
+}
+
+export interface AISynthesis {
+  summary: string;
+  keyPoints: string[];
+  sentiment: 'positive' | 'negative' | 'neutral';
+  confidence: number;
+  sources: string[];
+}
+
+export interface AIDeduction {
+  deduction: string;
+  reasoning: string;
+  confidence: number;
+  relatedEvents: string[];
+}
+
+export type Language = 
+  | 'en' | 'ar' | 'es' | 'fr' | 'de' | 'zh' | 'ja' | 'ko' | 'ru' | 'pt'
+  | 'it' | 'nl' | 'tr' | 'pl' | 'sv' | 'hi' | 'vi' | 'th' | 'he' | 'el';
+
+export interface Translation {
+  [key: string]: string | Translation;
 }
