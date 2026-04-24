@@ -59,6 +59,30 @@ export const ACTIVE_CONFLICTS = [
   { name: 'Haiti', lat: 18.97, lon: -72.28, type: 'gang violence', intensity: 'high' },
 ];
 
+export const NUCLEAR_FACILITIES = [
+  { name: 'Kashiwazaki-Kariwa', lat: 37.43, lon: 138.60, country: 'Japan', reactors: 7, status: 'operational' },
+  { name: 'Bruce', lat: 44.33, lon: -81.60, country: 'Canada', reactors: 8, status: 'operational' },
+  { name: 'Hanford Site', lat: 46.55, lon: -119.49, country: 'USA', reactors: 0, status: 'decommissioned' },
+  { name: 'Sellafield', lat: 54.42, lon: -3.50, country: 'UK', reactors: 0, status: 'reprocessing' },
+  { name: 'Chernobyl', lat: 51.39, lon: 30.10, country: 'Ukraine', reactors: 0, status: 'disaster' },
+  { name: 'Fukushima Daiichi', lat: 37.42, lon: 141.03, country: 'Japan', reactors: 0, status: 'disaster' },
+  { name: 'Zaporizhzhia', lat: 47.51, lon: 34.59, country: 'Ukraine', reactors: 6, status: 'operational' },
+  { name: 'Dimona', lat: 31.00, lon: 35.15, country: 'Israel', reactors: 1, status: 'operational' },
+  { name: 'Natanz', lat: 33.72, lon: 51.72, country: 'Iran', reactors: 0, status: 'enrichment' },
+  { name: 'Fordow', lat: 34.88, lon: 50.99, country: 'Iran', reactors: 0, status: 'enrichment' },
+  { name: 'Bushehr', lat: 28.83, lon: 50.89, country: 'Iran', reactors: 1, status: 'operational' },
+  { name: 'Yongbyon', lat: 39.80, lon: 125.75, country: 'DPRK', reactors: 1, status: 'operational' },
+  { name: 'Mayak', lat: 55.70, lon: 60.80, country: 'Russia', reactors: 0, status: 'reprocessing' },
+  { name: 'Seversk', lat: 56.60, lon: 84.90, country: 'Russia', reactors: 3, status: 'operational' },
+  { name: 'La Hague', lat: 49.53, lon: -1.88, country: 'France', reactors: 0, status: 'reprocessing' },
+  { name: 'Flamanville', lat: 49.54, lon: -1.88, country: 'France', reactors: 2, status: 'operational' },
+  { name: 'Kalpakkam', lat: 12.56, lon: 80.17, country: 'India', reactors: 2, status: 'operational' },
+  { name: 'Kudankulam', lat: 8.17, lon: 77.71, country: 'India', reactors: 2, status: 'operational' },
+  { name: 'Taishan', lat: 21.92, lon: 112.98, country: 'China', reactors: 2, status: 'operational' },
+  { name: 'Tianwan', lat: 34.69, lon: 119.46, country: 'China', reactors: 6, status: 'operational' },
+  { name: 'Pakistan Institute of Nuclear Science', lat: 33.68, lon: 73.27, country: 'Pakistan', reactors: 1, status: 'operational' },
+];
+
 // Market symbols
 export const MARKET_SYMBOLS = [
   { name: 'S&P 500', symbol: '^GSPC', type: 'index' },

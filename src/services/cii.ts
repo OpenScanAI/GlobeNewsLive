@@ -1,4 +1,4 @@
-//**
+/**
  * Country Instability Index (CII) Service
  * Calculates and provides country-level instability scores
  */
@@ -17,7 +17,7 @@ export interface CountryInstabilityData {
 }
 
 export interface RiskFactor {
-  type: 'conflict' | 'political' | 'economic' | 'social' | 'environmental';
+  type: 'conflict' | 'political' | 'economic' | 'social' | 'environmental' | 'humanitarian';
   severity: number; // 0-10
   description: string;
 }

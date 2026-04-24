@@ -205,7 +205,7 @@ export default function SignalFeed({ signals, loading, onSignalClick }: SignalFe
       const now = Date.now();
 
       if (!shouldPause && now > bottomPauseUntil && el.scrollHeight > el.clientHeight) {
-        const speed = 0.04; // px per ms (~2.4px/sec)
+        const speed = 0.12; // px per ms (~7.2px/sec)
         el.scrollTop += delta * speed;
         lastScrollTimeRef.current = now;
 
