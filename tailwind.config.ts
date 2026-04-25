@@ -17,8 +17,10 @@ const config: Config = {
         'accent-gold': '#ffaa00',
       },
       fontFamily: {
-        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
-        body: ['IBM Plex Sans', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-geist)', 'var(--font-inter)', 'Inter', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-mono)', 'JetBrains Mono', 'Fira Code', 'monospace'],
+        body: ['var(--font-geist)', 'var(--font-inter)', 'Inter', 'system-ui', 'sans-serif'],
+        geist: ['var(--font-geist)', 'system-ui', 'sans-serif'],
       }
     }
   },
