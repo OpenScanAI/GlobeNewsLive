@@ -2,6 +2,7 @@
 
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import * as THREE from 'three';
 import { Signal } from '@/types';
 import { ACTIVE_CONFLICTS } from '@/lib/feeds';
 
@@ -146,11 +147,37 @@ export default function WarRoom({ signals, conflicts = [] }: WarRoomProps) {
         if (destroyed || !containerRef.current) return;
         const el = containerRef.current;
         const globe = new GlobeCtor(el);
+
+        // Custom material: white continents on dark ocean
+        const textureLoader = new THREE.TextureLoader();
+        const earthTexture = textureLoader.load('//unpkg.com/three-globe/example/img/earth-dark.jpg');
+        const bumpTexture = textureLoader.load('//unpkg.com/three-globe/example/img/earth-topology.png');
+        const globeMat = new THREE.MeshBasicMaterial({
+          map: earthTexture,
+        });
+        globeMat.onBeforeCompile = (shader) => {
+          shader.fragmentShader = shader.fragmentShader.replace(
+            '#include <map_fragment>',
+            `
+            #include <map_fragment>
+            float brightness = dot(diffuseColor.rgb, vec3(0.299, 0.587, 0.114));
+            float edge = length(vec2(dFdx(brightness), dFdy(brightness)));
+            vec3 borderColor = vec3(0.6, 0.6, 0.6);
+            vec3 landColor = vec3(0.08, 0.08, 0.08);
+            vec3 oceanColor = vec3(0.01, 0.01, 0.02);
+            float isLand = step(0.04, brightness);
+            float isBorder = smoothstep(0.02, 0.08, edge);
+            vec3 finalColor = mix(oceanColor, landColor, isLand);
+            finalColor = mix(finalColor, borderColor, isBorder);
+            diffuseColor.rgb = finalColor;
+            `
+          );
+        };
+        globe.globeMaterial(globeMat);
+
         globe
           .width(el.clientWidth||800).height(el.clientHeight||600)
           .backgroundColor('rgba(0,0,0,0)')
-          .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
-          .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
           .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
           .atmosphereColor('#ff4444')
           .atmosphereAltitude(0.12)
