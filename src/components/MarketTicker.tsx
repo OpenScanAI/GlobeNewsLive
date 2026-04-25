@@ -9,18 +9,18 @@ interface MarketTickerProps {
 
 function MarketItem({ market }: { market: MarketData }) {
   const isUp = market.direction === 'up';
-  
   return (
-    <div className="flex items-center justify-between px-2 py-1.5 bg-elevated/50 rounded">
-      <div className="flex items-center gap-2">
-        <span className="text-[10px] text-text-muted font-mono">{market.symbol}</span>
-        <span className="text-[11px] text-white">{market.name}</span>
+    <div className="flex items-center justify-between px-3 py-2 border-b border-[rgba(156,116,245,0.08)] hover:bg-[#1a1a2a] transition-colors group">
+      <div className="flex items-center gap-3">
+        <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: isUp ? '#00c896' : '#ff4d6a' }} />
+        <div>
+          <span className="text-[11px] font-mono font-bold text-[#9c74f5] tracking-wider">{market.symbol}</span>
+          <span className="text-[10px] text-[#5c5a72] ml-2">{market.name}</span>
+        </div>
       </div>
-      <div className="flex items-center gap-2">
-        <span className="text-[11px] font-mono text-white">{market.value}</span>
-        <span 
-          className={`text-[10px] font-mono font-bold ${isUp ? 'text-accent-green' : 'text-accent-red'}`}
-        >
+      <div className="flex items-center gap-3">
+        <span className="text-[12px] font-mono font-medium text-[#e8e6f0] tabular-nums">{market.value}</span>
+        <span className={`text-[10px] font-mono font-bold tabular-nums px-1.5 py-0.5 rounded ${isUp ? 'text-[#00c896] bg-[rgba(0,200,150,0.1)]' : 'text-[#ff4d6a] bg-[rgba(255,77,106,0.1)]'}`}>
           {isUp ? '▲' : '▼'} {market.change}
         </span>
       </div>
@@ -30,30 +30,30 @@ function MarketItem({ market }: { market: MarketData }) {
 
 export default function MarketTicker({ markets, loading }: MarketTickerProps) {
   return (
-    <div className="glass-panel">
-      <div className="flex items-center justify-between px-3 py-2 border-b border-border-subtle bg-panel/50">
+    <div style={{ background: '#12121c', border: '0.5px solid rgba(156,116,245,0.15)', borderRadius: '8px', overflow: 'hidden' }}>
+      <div style={{ borderBottom: '0.5px solid rgba(156,116,245,0.08)', padding: '8px 12px', background: '#0d0d14' }} className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-lg">📈</span>
-          <span className="font-mono text-[11px] font-bold tracking-wider text-accent-blue">
-            MARKETS
+          <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: '#9c74f5', letterSpacing: '0.08em' }}>
+            ▪ MARKETS
+          </span>
+          <span className="text-[9px] px-1.5 py-0.5 rounded font-mono" style={{ background: 'rgba(156,116,245,0.1)', color: '#9c74f5', border: '0.5px solid rgba(156,116,245,0.2)' }}>
+            LIVE
           </span>
         </div>
-        {loading && (
-          <span className="text-accent-gold text-[10px] animate-pulse">⟳</span>
-        )}
+        {loading && <span className="text-[10px] animate-pulse" style={{ color: '#9c74f5' }}>⟳</span>}
       </div>
-      
-      <div className="p-2 space-y-1">
+      <div>
         {markets.length === 0 ? (
-          <div className="animate-pulse space-y-1">
-            {[1, 2, 3, 4].map(i => (
-              <div key={i} className="h-7 bg-border-default rounded" />
+          <div className="p-3 space-y-2">
+            {[1,2,3,4].map(i => (
+              <div key={i} className="animate-pulse flex justify-between px-3 py-2">
+                <div className="h-2 rounded w-16" style={{ background: 'rgba(156,116,245,0.1)' }} />
+                <div className="h-2 rounded w-20" style={{ background: 'rgba(156,116,245,0.1)' }} />
+              </div>
             ))}
           </div>
         ) : (
-          markets.map((market) => (
-            <MarketItem key={market.symbol} market={market} />
-          ))
+          markets.map((market) => <MarketItem key={market.symbol} market={market} />)
         )}
       </div>
     </div>

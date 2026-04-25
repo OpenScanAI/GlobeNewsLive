@@ -429,3 +429,18 @@ body {
   --bg-panel-lm: #ffffff;
   --text-lm: #1a1a2e;
 }
+
+
+/* ── Performance & Polish ─────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+.scrollbar-none { scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.glass-panel { animation: panelFadeIn 0.3s ease-out; }
+@keyframes panelFadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes criticalGlow { 0%, 100% { box-shadow: 0 0 8px rgba(255,34,68,0.4); } 50% { box-shadow: 0 0 20px rgba(255,34,68,0.8); } }
+.critical-glow { animation: criticalGlow 2s ease-in-out infinite; }
+button { transition: all 0.15s ease; }
+body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }

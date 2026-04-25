@@ -24,6 +24,7 @@ export interface Signal {
   lat?: number;
   lon?: number;
   summary?: string;
+  region?: string;
 }
 
 export interface MarketData {

@@ -14,21 +14,16 @@ export default function RefreshCountdown({ intervalMs, lastUpdate, onRefresh }: 
   const [progress, setProgress] = useState(100);
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const tick = () => {
       const elapsed = Date.now() - lastUpdate.getTime();
       const remaining = Math.max(0, intervalMs - elapsed);
-      const progressPercent = (remaining / intervalMs) * 100;
-      
       setTimeLeft(remaining);
-      setProgress(progressPercent);
-      
-      if (remaining === 0 && onRefresh) {
-        onRefresh();
-      }
-    }, 1000);
-
+      setProgress((remaining / intervalMs) * 100);
+    };
+    tick();
+    const interval = setInterval(tick, 1000);
     return () => clearInterval(interval);
-  }, [intervalMs, lastUpdate, onRefresh]);
+  }, [intervalMs, lastUpdate]);
 
   const formatTime = (ms: number) => {
     const seconds = Math.ceil(ms / 1000);

@@ -279,7 +279,7 @@ export default function WorldMap({
 
     map.current = new maplibregl.Map({
       container: mapContainer.current,
-      style: "https://demotiles.maplibre.org/style.json",
+      style: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
       center: [30, 25],
       zoom: 2.5,
       minZoom: 1.5,

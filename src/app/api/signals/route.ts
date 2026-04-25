@@ -38,7 +38,7 @@ const FALLBACK_SIGNALS: Signal[] = [
     id: "fallback-3",
     title: "Oil prices surge 8% as Strait of Hormuz shipping suspended",
     severity: "HIGH",
-    category: "economic",
+    category: "economy",
     source: "Bloomberg",
     sourceUrl: "https://bloomberg.com",
     timeAgo: "18 min ago",
@@ -74,7 +74,7 @@ const FALLBACK_SIGNALS: Signal[] = [
     id: "fallback-6",
     title: "EU announces emergency sanctions on Iranian oil exports",
     severity: "MEDIUM",
-    category: "political",
+    category: "politics",
     source: "EU News",
     sourceUrl: "https://europa.eu",
     timeAgo: "45 min ago",
@@ -98,7 +98,7 @@ const FALLBACK_SIGNALS: Signal[] = [
     id: "fallback-8",
     title: "Russia condemns strikes, warns of 'dangerous escalation'",
     severity: "MEDIUM",
-    category: "political",
+    category: "politics",
     source: "TASS",
     sourceUrl: "https://tass.com",
     timeAgo: "1.5 hours ago",
@@ -122,7 +122,7 @@ const FALLBACK_SIGNALS: Signal[] = [
     id: "fallback-10",
     title: "Gold hits record $2,450/oz as investors flee to safe havens",
     severity: "LOW",
-    category: "economic",
+    category: "economy",
     source: "Financial Times",
     sourceUrl: "https://ft.com",
     timeAgo: "3 hours ago",
@@ -146,7 +146,7 @@ const FALLBACK_SIGNALS: Signal[] = [
     id: "fallback-12",
     title: "IAEA calls for immediate access to inspect damaged Natanz facility",
     severity: "MEDIUM",
-    category: "political",
+    category: "politics",
     source: "IAEA",
     sourceUrl: "https://iaea.org",
     timeAgo: "40 min ago",
@@ -770,7 +770,7 @@ let cache: {
   timestamp: number;
   sources: { success: number; failed: number };
 } | null = null;
-const CACHE_TTL = 60 * 1000; // 1 minute
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
 export async function GET(request: Request) {
   // Apply rate limiting
@@ -800,7 +800,7 @@ export async function GET(request: Request) {
     // Fetch all feeds in parallel with timeout
     const fetchWithTimeout = async (
       url: string,
-      timeout = 8000, // Reduced from 10000
+      timeout = 4000,
     ): Promise<string | null> => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), timeout);

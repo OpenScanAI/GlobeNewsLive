@@ -48,6 +48,8 @@ import CustomVideoWall from '@/components/CustomVideoWall';
 import { useLanguage } from '@/components/LanguageSelector';
 import CommandPalette from '@/components/CommandPalette';
 import PushNotificationManager from '@/components/PushNotificationManager';
+import WorldMonitorLayout from '@/components/WorldMonitorLayout';
+import MapFocusView from '@/components/MapFocusView';
 import BreakingNewsBanner from '@/components/BreakingNewsBanner';
 import TVMode from '@/components/TVMode';
 import { Signal, MarketData, PredictionMarket, ThreatLevel } from '@/types';
@@ -86,7 +88,7 @@ function playAlertSound() {
   }
 }
 
-type ViewMode = 'dashboard' | 'warroom';
+type ViewMode = 'dashboard' | 'warroom' | 'mapfocus';
 type MobileView = 'feed' | 'map' | 'markets' | 'tracking' | 'alerts';
 
 export default function Dashboard() {
@@ -358,6 +360,23 @@ export default function Dashboard() {
     );
   }
 
+  // Map Focus View
+  if (viewMode === 'mapfocus') {
+    return (
+      <div className="h-screen flex flex-col bg-void overflow-hidden">
+        <BreakingNewsBanner signals={signals} />
+        <MapFocusView
+          signals={signals}
+          conflicts={conflicts}
+          earthquakes={earthquakes}
+          activeLayers={activeLayers}
+          onLayerToggle={handleLayerToggle}
+          onExit={() => setViewMode('dashboard')}
+        />
+      </div>
+    );
+  }
+
   // Dashboard View
   return (
     <div className={`h-screen flex flex-col bg-void overflow-hidden ${isRTL ? 'rtl' : 'ltr'}`} dir={isRTL ? 'rtl' : 'ltr'}>
@@ -406,6 +425,12 @@ export default function Dashboard() {
           >
             🎬 VIDEO WALL
           </button>
+          <button
+            onClick={() => setViewMode('mapfocus')}
+            className='px-3 py-1 rounded text-[10px] font-mono text-accent-blue bg-accent-blue/10 hover:bg-accent-blue/20 transition-all'
+          >
+            🗺️ MAP FOCUS
+          </button>
         </div>
         <div className="flex items-center gap-3">
           <KeyboardShortcutsHelp />
@@ -447,8 +472,9 @@ export default function Dashboard() {
         onThemeToggle={toggleTheme}
       />
 
-      {/* Desktop Layout — Custom Dashboard with drag-and-drop */}
+      {/* Desktop Layout — WorldMonitor-style with sidebar */}
       <div className="hidden lg:flex flex-1 overflow-hidden">
+        <WorldMonitorLayout signals={signals} activeLayers={activeLayers} onLayerToggle={handleLayerToggle} defcon={3} criticalCount={criticalCount}>
         <CustomDashboard
           signals={signals}
           markets={markets}
@@ -459,7 +485,10 @@ export default function Dashboard() {
           activeLayers={activeLayers}
           onLayerToggle={handleLayerToggle}
           onSignalClick={handleSignalClick}
+          isBookmarked={isBookmarked}
+          onBookmark={toggleBookmark}
         />
+        </WorldMonitorLayout>
       </div>
 
       {/* Mobile Layout */}

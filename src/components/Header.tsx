@@ -1,4 +1,5 @@
 'use client';
+import RefreshCountdown from '@/components/RefreshCountdown';
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -187,6 +188,7 @@ export default function Header({ threatLevel, breakingNews, lastUpdate, signalCo
               <span className="font-mono text-[11px] text-white">{updateAgo < 60 ? 'LIVE' : 'SYNCING'}</span>
             </div>
             <div className="font-mono text-[9px] text-text-dim">{updateAgo < 60 ? `${updateAgo}s` : `${Math.floor(updateAgo / 60)}m`} ago</div>
+            <RefreshCountdown intervalMs={30000} lastUpdate={lastUpdate} onRefresh={() => {}} />
           </div>
         </div>
       </div>

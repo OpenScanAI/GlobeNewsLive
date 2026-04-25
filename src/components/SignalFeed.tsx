@@ -3,8 +3,11 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Signal, Severity } from '@/types';
 import { getSeverityColor } from '@/lib/classify';
+import { BookmarkButton } from '@/components/BookmarkManager';
 
 interface SignalFeedProps {
+  isBookmarked?: (id: string) => boolean;
+  onBookmark?: (id: string) => void;
   signals: Signal[];
   loading?: boolean;
   onSignalClick?: (signal: Signal) => void;
@@ -68,7 +71,7 @@ function SeverityBadge({ severity }: { severity: Severity }) {
   );
 }
 
-function SignalItem({ signal, onClick, isNew }: { signal: Signal & { iranRelevance?: number; region?: string }; onClick?: () => void; isNew?: boolean }) {
+function SignalItem({ signal, onClick, isNew, isBookmarked, onBookmark }: { signal: Signal & { iranRelevance?: number; region?: string }; onClick?: () => void; isNew?: boolean; isBookmarked?: boolean; onBookmark?: () => void }) {
   const color = getSeverityColor(signal.severity);
   const isIranRelated = (signal.iranRelevance || 0) > 0;
   
@@ -103,7 +106,9 @@ function SignalItem({ signal, onClick, isNew }: { signal: Signal & { iranRelevan
                 NEW
               </span>
             )}
-          </div>
+            {onBookmark && (
+              <BookmarkButton signalId={signal.id} isBookmarked={!!isBookmarked} onToggle={onBookmark} />
+            )}          </div>
         </div>
         
         <div className="flex flex-wrap items-center gap-2 text-[9px]">
@@ -144,7 +149,7 @@ function SkeletonItem() {
 
 type FilterMode = 'all' | 'iran' | 'critical';
 
-export default function SignalFeed({ signals, loading, onSignalClick }: SignalFeedProps) {
+export default function SignalFeed({ signals, loading, onSignalClick, isBookmarked, onBookmark }: SignalFeedProps) {
   const [prevSignalIds, setPrevSignalIds] = useState<Set<string>>(new Set());
   const [newSignalIds, setNewSignalIds] = useState<Set<string>>(new Set());
   const [filter, setFilter] = useState<FilterMode>('all');
@@ -310,6 +315,8 @@ export default function SignalFeed({ signals, loading, onSignalClick }: SignalFe
                     signal={signal as Signal & { iranRelevance?: number; region?: string }} 
                     onClick={() => onSignalClick?.(signal)}
                     isNew={newSignalIds.has(signal.id)}
+                    isBookmarked={isBookmarked?.(signal.id)}
+                    onBookmark={() => onBookmark?.(signal.id)}
                   />
                 ))}
               </div>
