@@ -1,4 +1,5 @@
 'use client';
+import { MapViewProvider, useMapView } from '@/contexts/MapViewContext';
 
 import { useState } from 'react';
 import type { Signal, MarketData } from '@/types';
@@ -43,12 +44,12 @@ const REGION_PRESETS = [
   { id: 'americas', label: 'Americas', icon: '🌎' },
 ];
 
-export default function WorldMonitorLayout({ children, signals, activeLayers, onLayerToggle, defcon = 3, criticalCount = 0 }: WorldMonitorLayoutProps) {
+function WorldMonitorLayoutInner({ children, signals, activeLayers, onLayerToggle, defcon = 3, criticalCount = 0 }: WorldMonitorLayoutProps) {
   const [layers, setLayers] = useState<LayerConfig[]>(SIDEBAR_LAYERS);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [region, setRegion] = useState('global');
   const [layerSearch, setLayerSearch] = useState('');
-  const [view, setView] = useState<'2D' | '3D'>('2D');
+  const { mapView: view, setMapView: setView } = useMapView();
 
   const toggleLayer = (id: string) => {
     setLayers(prev => prev.map(l => l.id === id ? { ...l, active: !l.active } : l));
@@ -189,5 +190,13 @@ export default function WorldMonitorLayout({ children, signals, activeLayers, on
         </div>
       </div>
     </div>
+  );
+}
+
+export default function WorldMonitorLayout(props: WorldMonitorLayoutProps) {
+  return (
+    <MapViewProvider>
+      <WorldMonitorLayoutInner {...props} />
+    </MapViewProvider>
   );
 }

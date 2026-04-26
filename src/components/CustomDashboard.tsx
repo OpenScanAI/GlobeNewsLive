@@ -82,6 +82,7 @@ import {
 import SignalFeed from "./SignalFeed";
 import WorldMap from "./WorldMap";
 import Globe3DView from "./Globe3DView";
+import MapToggleView from "./MapToggleView";
 import NKMissilePanel from "./NKMissilePanel";
 import ChatAnalystPanel from "./ChatAnalystPanel";
 import CountryIntelligenceIndex from "./CountryIntelligenceIndex";
@@ -797,14 +798,7 @@ export default function CustomDashboard({
           />
         );
       case "world-map":
-        return (
-          <WorldMap
-            signals={signals}
-            activeLayers={activeLayers}
-            onLayerToggle={onLayerToggle}
-            earthquakes={earthquakes}
-          />
-        );
+        return <MapToggleView signals={signals} activeLayers={activeLayers} onLayerToggle={onLayerToggle} earthquakes={earthquakes} />;
       case "country-intelligence":
         return <CountryIntelligenceIndex />;
       case "cross-source-signals":
