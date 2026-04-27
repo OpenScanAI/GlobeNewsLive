@@ -24,6 +24,7 @@ import AttackTimeline from '@/components/AttackTimeline';
 import MultiPredictions from '@/components/MultiPredictions';
 import NewsChannels from '@/components/NewsChannels';
 import FlightRadar from '@/components/FlightRadar';
+import FlightTracker from '@/components/FlightTracker';
 import SearchBar from '@/components/SearchBar';
 import CyberFeed from '@/components/CyberFeed';
 import HotspotStreams from '@/components/HotspotStreams';
@@ -35,6 +36,8 @@ import { useLanguage } from '@/components/LanguageSelector';
 import CommandPalette from '@/components/CommandPalette';
 import BreakingNewsBanner from '@/components/BreakingNewsBanner';
 import TVMode from '@/components/TVMode';
+import HelpPin from '@/components/HelpPin';
+import FullscreenToggle from '@/components/FullscreenToggle';
 import { Signal, MarketData, PredictionMarket, ThreatLevel } from '@/types';
 import { getThreatLevelFromSignals } from '@/lib/classify';
 import { ACTIVE_CONFLICTS } from '@/lib/feeds';
@@ -353,6 +356,7 @@ export default function Dashboard() {
           </button>
         </div>
         <div className="flex items-center gap-3">
+          <FullscreenToggle />
           <button
             onClick={() => setCommandPaletteOpen(true)}
             className="flex items-center gap-2 px-3 py-1 rounded text-[10px] font-mono text-text-dim hover:text-white border border-border-subtle hover:border-accent-green/30 transition-colors"
@@ -414,6 +418,7 @@ export default function Dashboard() {
           <div className="h-full overflow-y-auto p-2 space-y-2">
             <DefconIndicator />
             <MilitaryTracker />
+            <FlightTracker />
             <TrackingPanel earthquakes={earthquakes} />
             <TwitterFeed />
             <div className="glass-panel">
@@ -440,6 +445,8 @@ export default function Dashboard() {
       <div className="hidden lg:block">
         <StatsBar activeConflicts={ACTIVE_CONFLICTS.length} militaryAlerts={militaryCount} highSeverity={highCount} criticalSeverity={criticalCount} timeFilter={timeFilter} onTimeFilterChange={setTimeFilter} />
       </div>
+      {/* Help Pin - Floating help button */}
+      <HelpPin />
     </div>
   );
 }
