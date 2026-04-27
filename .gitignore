@@ -2,3 +2,4 @@ docs/xdcscan-server-audit.md
 node_modules/
 .next/
 .vercel
+tsconfig.tsbuildinfo
