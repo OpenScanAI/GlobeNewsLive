@@ -87,6 +87,7 @@ export default function Dashboard() {
   const [isClient, setIsClient] = useState(false);
   const [prevCriticalCount, setPrevCriticalCount] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(false);
+  const [notificationLevel, setNotificationLevel] = useState<'all' | 'critical'>('critical');
   const [mobileView, setMobileView] = useState<MobileView>('feed');
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [tvMode, setTvMode] = useState(false);
@@ -155,9 +156,12 @@ export default function Dashboard() {
   const militaryCount = signals.filter(s => s.category === 'military').length;
 
   useEffect(() => {
-    if (soundEnabled && criticalCount > prevCriticalCount && prevCriticalCount > 0) playAlertSound();
-    setPrevCriticalCount(criticalCount);
-  }, [criticalCount, soundEnabled, prevCriticalCount]);
+    const relevantCount = notificationLevel === 'all'
+      ? signals.filter(s => s.severity === 'CRITICAL' || s.severity === 'HIGH').length
+      : criticalCount;
+    if (soundEnabled && relevantCount > prevCriticalCount && prevCriticalCount > 0) playAlertSound();
+    setPrevCriticalCount(relevantCount);
+  }, [criticalCount, soundEnabled, prevCriticalCount, notificationLevel, signals]);
 
   const handleLayerToggle = useCallback((layer: string) => {
     setActiveLayers(prev => prev.includes(layer) ? prev.filter(l => l !== layer) : [...prev, layer]);
@@ -304,6 +308,13 @@ export default function Dashboard() {
           >
             {soundEnabled ? '🔔' : '🔕'} ALERTS
           </button>
+          <button
+            onClick={() => setNotificationLevel(notificationLevel === 'critical' ? 'all' : 'critical')}
+            className={`flex items-center gap-1.5 px-2 py-1 rounded text-[9px] font-mono ${notificationLevel === 'all' ? 'bg-accent-blue/20 text-accent-blue' : 'bg-elevated text-text-dim'}`}
+            title={notificationLevel === 'critical' ? 'Only Critical notifications' : 'All updates notifications'}
+          >
+            {notificationLevel === 'critical' ? '🔴' : '🔵'} {notificationLevel === 'critical' ? 'CRIT' : 'ALL'}
+          </button>
         </div>
         <div className="flex-1 overflow-hidden">
           <WarRoom signals={signals} conflicts={conflicts} />
@@ -328,7 +339,7 @@ export default function Dashboard() {
       <TVMode isActive={tvMode} onExit={() => setTvMode(false)} />
 
       {/* Breaking News Banner */}
-      <BreakingNewsBanner signals={signals} />
+      <BreakingNewsBanner signals={signals} notificationLevel={notificationLevel} />
 
       {/* Mode Toggle - Desktop */}
       <div className="hidden lg:flex bg-void border-b border-border-default px-4 py-1.5 items-center justify-between">
@@ -367,6 +378,13 @@ export default function Dashboard() {
             className={`flex items-center gap-1.5 px-2 py-1 rounded text-[9px] font-mono ${soundEnabled ? 'bg-accent-green/20 text-accent-green' : 'bg-elevated text-text-dim'}`}
           >
             {soundEnabled ? '🔔' : '🔕'} ALERTS
+          </button>
+          <button
+            onClick={() => setNotificationLevel(notificationLevel === 'critical' ? 'all' : 'critical')}
+            className={`flex items-center gap-1.5 px-2 py-1 rounded text-[9px] font-mono ${notificationLevel === 'all' ? 'bg-accent-blue/20 text-accent-blue' : 'bg-elevated text-text-dim'}`}
+            title={notificationLevel === 'critical' ? 'Only Critical notifications' : 'All updates notifications'}
+          >
+            {notificationLevel === 'critical' ? '🔴' : '🔵'} {notificationLevel === 'critical' ? 'CRIT' : 'ALL'}
           </button>
         </div>
       </div>

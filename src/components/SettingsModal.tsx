@@ -7,6 +7,7 @@ export interface DashboardSettings {
   refreshInterval: 15 | 30 | 60;
   soundEnabled: boolean;
   trackedRegions: string[];
+  notificationLevel: 'all' | 'critical';
 }
 
 export const DEFAULT_SETTINGS: DashboardSettings = {
@@ -14,6 +15,7 @@ export const DEFAULT_SETTINGS: DashboardSettings = {
   refreshInterval: 30,
   soundEnabled: false,
   trackedRegions: ['Middle East', 'Ukraine', 'Taiwan', 'Korea'],
+  notificationLevel: 'critical',
 };
 
 const AVAILABLE_REGIONS = [
@@ -144,6 +146,40 @@ export default function SettingsModal({ isOpen, onClose, settings, onSettingsCha
                 <BellOff size={12} /> Disabled
               </button>
             </div>
+          </div>
+
+          {/* Push Notification Level */}
+          <div>
+            <label className="block text-[10px] font-mono text-white/40 uppercase tracking-widest mb-2">
+              Push Notifications
+            </label>
+            <div className="flex gap-2">
+              <button
+                onClick={() => update({ notificationLevel: 'critical' })}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[11px] font-mono border transition-all ${
+                  settings.notificationLevel === 'critical'
+                    ? 'bg-[#ff2244]/15 border-[#ff2244]/40 text-[#ff2244]'
+                    : 'bg-white/5 border-white/10 text-white/40 hover:border-white/20 hover:text-white/60'
+                }`}
+              >
+                <Bell size={12} /> Only Critical
+              </button>
+              <button
+                onClick={() => update({ notificationLevel: 'all' })}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[11px] font-mono border transition-all ${
+                  settings.notificationLevel === 'all'
+                    ? 'bg-[#00ccff]/15 border-[#00ccff]/40 text-[#00ccff]'
+                    : 'bg-white/5 border-white/10 text-white/40 hover:border-white/20 hover:text-white/60'
+                }`}
+              >
+                <Bell size={12} /> All Updates
+              </button>
+            </div>
+            <p className="text-[9px] text-white/30 mt-1.5 font-mono">
+              {settings.notificationLevel === 'critical'
+                ? 'Only CRITICAL severity alerts will trigger banners and sounds.'
+                : 'Both CRITICAL and HIGH severity alerts will trigger banners and sounds.'}
+            </p>
           </div>
 
           {/* Tracked Regions */}
