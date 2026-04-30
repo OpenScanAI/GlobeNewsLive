@@ -16,7 +16,7 @@ const fetcher = async (url: string) => {
 };
 
 export default function FinanceDashboard() {
-  const { data, isLoading } = useSWR<FinanceData>("/api/finance", fetcher, {
+  const { data, isLoading } = useSWR<FinanceData>("/api/finance/", fetcher, {
     refreshInterval: 30000,
     revalidateOnFocus: true,
   });
