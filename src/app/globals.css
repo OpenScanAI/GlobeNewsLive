@@ -429,3 +429,22 @@ body {
   --bg-panel-lm: #ffffff;
   --text-lm: #1a1a2e;
 }
+
+/* ─── RSS Ticker Animation ──────────────────────────────────────────── */
+@keyframes ticker-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-ticker-scroll {
+  animation: ticker-scroll 60s linear infinite;
+}
+
+/* Pause on hover - smoother experience */
+.animate-ticker-scroll:hover {
+  animation-play-state: paused;
+}

@@ -35,6 +35,7 @@ import { useLanguage } from '@/components/LanguageSelector';
 import CommandPalette from '@/components/CommandPalette';
 import BreakingNewsBanner from '@/components/BreakingNewsBanner';
 import TVMode from '@/components/TVMode';
+import RSSTicker from '@/components/RSSTicker';
 import { Signal, MarketData, PredictionMarket, ThreatLevel } from '@/types';
 import { getThreatLevelFromSignals } from '@/lib/classify';
 import { ACTIVE_CONFLICTS } from '@/lib/feeds';
@@ -454,6 +455,11 @@ export default function Dashboard() {
       </main>
 
       <MobileNav activeView={mobileView} onViewChange={setMobileView} criticalCount={criticalCount} />
+
+      {/* RSS News Ticker - Desktop */}
+      <div className="hidden lg:block">
+        <RSSTicker />
+      </div>
 
       <div className="hidden lg:block">
         <StatsBar activeConflicts={ACTIVE_CONFLICTS.length} militaryAlerts={militaryCount} highSeverity={highCount} criticalSeverity={criticalCount} timeFilter={timeFilter} onTimeFilterChange={setTimeFilter} />
