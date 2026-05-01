@@ -78,7 +78,7 @@ function jitter(value: number, seed: number, scale: number): number {
 
 function classifyType(text: string): MissileEvent['type'] {
   const value = text.toLowerCase();
-  if (value.includes('intercept')) return 'INTERCEPTION';
+  if (value.includes('intercept')) return 'HYPERSONIC';
   if (value.includes('drone') || value.includes('uav')) return 'DRONE';
   if (value.includes('air')) return 'AIRSTRIKE';
   if (value.includes('shell') || value.includes('artillery')) return 'ARTILLERY';
@@ -91,8 +91,6 @@ function performanceForType(type: MissileEvent['type']): Pick<MissileEvent, 'spe
   switch (type) {
     case 'ICBM':
       return { speed: 7000, altitude: 1200, warhead: 'strategic' };
-    case 'MRBM':
-      return { speed: 4200, altitude: 600, warhead: 'conventional' };
     case 'SRBM':
       return { speed: 1800, altitude: 120, warhead: 'conventional' };
     case 'CRUISE':
@@ -101,8 +99,6 @@ function performanceForType(type: MissileEvent['type']): Pick<MissileEvent, 'spe
       return { speed: 180, altitude: 0.12, warhead: 'loitering munition' };
     case 'ARTILLERY':
       return { speed: 900, altitude: 12, warhead: 'high explosive' };
-    case 'INTERCEPTION':
-      return { speed: 3000, altitude: 80, warhead: 'kinetic interceptor' };
     case 'AIRSTRIKE':
     default:
       return { speed: 950, altitude: 10, warhead: 'precision munition' };
@@ -131,15 +127,13 @@ function buildEvent(params: {
   return {
     id: params.id,
     type: params.type,
-    origin: [jitter(baseOrigin[0], params.seed, 0.8), jitter(baseOrigin[1], params.seed + 1, 0.8)],
-    target: params.target,
-    label: params.label,
-    status: params.status ?? (params.type === 'INTERCEPTION' ? 'intercepted' : 'active'),
+    lat: jitter(baseOrigin[0], params.seed, 0.8),
+    lon: jitter(baseOrigin[1], params.seed + 1, 0.8),
+    status: params.status ?? 'ACTIVE',
     confidence: params.confidence,
     source: params.source,
-    timestamp: params.timestamp,
+    timestamp: new Date(params.timestamp),
     region: params.region,
-    fatalities: params.fatalities,
     ...performance,
   };
 }
@@ -246,7 +240,7 @@ function syntheticEvents(): MissileEvent[] {
       region: zone.name,
       fatalities: 0,
       confidence: zone.intensity === 'high' ? 0.58 : 0.44,
-      status: index % 5 === 0 ? 'impact' : 'active',
+      status: index % 5 === 0 ? 'IMPACT' : 'ACTIVE',
       seed: index,
     });
   });
