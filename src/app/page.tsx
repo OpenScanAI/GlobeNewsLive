@@ -57,6 +57,7 @@ import TVMode from '@/components/TVMode';
 import RSSTicker from '@/components/RSSTicker';
 import HelpPin from '@/components/HelpPin';
 import FullscreenToggle from '@/components/FullscreenToggle';
+import PortStatusPanel from '@/components/PortStatusPanel';
 import { Signal, MarketData, PredictionMarket, ThreatLevel } from '@/types';
 import { getThreatLevelFromSignals } from '@/lib/classify';
 import { ACTIVE_CONFLICTS } from '@/lib/feeds';
@@ -102,7 +103,7 @@ export default function Dashboard() {
     'flights', 'routes', 'conflicts', 'military', 'chokepoints', 'earthquakes', 
     'nuclear', 'spaceports', 'iran', 'cables', 'pipelines', 
     'ai-centers', 'fires', 'gps-jamming', 'outages', 'cyber', 
-    'weather', 'displacement', 'clusters'
+    'weather', 'displacement', 'clusters', 'supplychain'
   ]);
   const { timeFilter, setTimeFilter, isLoaded: timeFilterLoaded } = usePersistentTimeFilter('24h');
   const [lastUpdate, setLastUpdate] = useState(new Date());
@@ -534,6 +535,7 @@ export default function Dashboard() {
             <MilitaryTracker />
             <FlightTracker />
             <TrackingPanel earthquakes={earthquakes} />
+            <PortStatusPanel />
             <TwitterFeed />
             <div className="glass-panel">
               <div className="px-3 py-2 border-b border-border-subtle bg-panel/50">
