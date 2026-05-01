@@ -133,7 +133,12 @@ function buildEvent(params: {
     type: params.type,
     origin: [jitter(baseOrigin[0], params.seed, 0.8), jitter(baseOrigin[1], params.seed + 1, 0.8)],
     target: params.target,
+    lat: params.target[0],
+    lon: params.target[1],
+    location: params.label,
     label: params.label,
+    description: `${params.type} strike in ${params.region}`,
+    severity: params.fatalities > 10 ? 'CRITICAL' : params.fatalities > 5 ? 'HIGH' : 'MEDIUM',
     status: params.status ?? (params.type === 'INTERCEPTION' ? 'intercepted' : 'active'),
     confidence: params.confidence,
     source: params.source,
@@ -246,7 +251,7 @@ function syntheticEvents(): MissileEvent[] {
       region: zone.name,
       fatalities: 0,
       confidence: zone.intensity === 'high' ? 0.58 : 0.44,
-      status: index % 5 === 0 ? 'impact' : 'active',
+      status: index % 5 === 0 ? 'IMPACTED' : 'active',
       seed: index,
     });
   });

@@ -56,7 +56,6 @@ import BreakingNewsBanner from '@/components/BreakingNewsBanner';
 import TVMode from '@/components/TVMode';
 import RSSTicker from '@/components/RSSTicker';
 import HelpPin from '@/components/HelpPin';
-import FullscreenToggle from '@/components/FullscreenToggle';
 import PortStatusPanel from '@/components/PortStatusPanel';
 import { Signal, MarketData, PredictionMarket, ThreatLevel } from '@/types';
 import { getThreatLevelFromSignals } from '@/lib/classify';

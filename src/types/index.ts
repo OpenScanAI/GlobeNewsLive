@@ -75,3 +75,27 @@ export interface DashboardState {
   timeFilter: '1h' | '6h' | '24h' | '48h' | '7d';
   activeLayers: string[];
 }
+
+export interface MissileEvent {
+  id: string;
+  type: 'DRONE' | 'AIRSTRIKE' | 'ARTILLERY' | 'SRBM' | 'CRUISE' | 'MISSILE' | 'ROCKET' | 'INTERCEPTION' | 'ICBM' | 'MRBM' | 'MLRS';
+  source: 'ACLED' | 'GDELT' | 'SYNTHETIC';
+  origin: [number, number];
+  target: [number, number];
+  lat: number;
+  lon: number;
+  timestamp: string;
+  location: string;
+  label: string;
+  description: string;
+  severity: Severity;
+  region: string;
+  speed?: number | string;
+  altitude?: number | string;
+  warhead?: string;
+  status?: 'IN_FLIGHT' | 'IMPACTED' | 'INTERCEPTED' | 'UNKNOWN' | 'intercepted' | 'active';
+  targetName?: string;
+  country?: string;
+  confidence?: number;
+  fatalities?: number;
+}
