@@ -6,9 +6,10 @@ import { Signal } from '@/types';
 interface BreakingNewsBannerProps {
   signals: Signal[];
   onClose?: () => void;
+  notificationLevel?: 'all' | 'critical';
 }
 
-export default function BreakingNewsBanner({ signals, onClose }: BreakingNewsBannerProps) {
+export default function BreakingNewsBanner({ signals, onClose, notificationLevel = 'critical' }: BreakingNewsBannerProps) {
   const [visible, setVisible] = useState(false);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
@@ -16,7 +17,7 @@ export default function BreakingNewsBanner({ signals, onClose }: BreakingNewsBan
   const tickerRef = useRef<HTMLDivElement>(null);
 
   const criticals = signals.filter(
-    s => s.severity === 'CRITICAL' && !dismissed.has(s.id)
+    s => (notificationLevel === 'all' ? (s.severity === 'CRITICAL' || s.severity === 'HIGH') : s.severity === 'CRITICAL') && !dismissed.has(s.id)
   );
 
   useEffect(() => {
