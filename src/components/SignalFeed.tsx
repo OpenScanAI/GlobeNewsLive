@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { Signal, Severity } from '@/types';
 import { getSeverityColor } from '@/lib/classify';
 import { BookmarkButton } from '@/components/BookmarkManager';
+import AudioSummary from '@/components/AudioSummary';
 
 interface SignalFeedProps {
   isBookmarked?: (id: string) => boolean;
@@ -94,6 +95,7 @@ function SignalItem({ signal, onClick, isNew, isBookmarked, onBookmark }: { sign
         <div className="flex items-start gap-2">
           <div className="text-[11px] text-white/90 leading-tight mb-1.5 flex-1">
             {signal.title}
+            <AudioSummary text={signal.title} className="ml-1" />
           </div>
           <div className="flex items-center gap-1 flex-shrink-0">
             {isIranRelated && (

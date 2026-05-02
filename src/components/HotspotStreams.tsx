@@ -166,9 +166,9 @@ export default function HotspotStreams() {
   return (
     <div className="glass-panel overflow-hidden">
       {/* Header */}
-      <button
+      <div
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full px-3 py-2 border-b border-border-subtle bg-gradient-to-r from-red-500/10 to-transparent flex items-center justify-between hover:bg-white/5 transition-colors"
+        className="w-full px-3 py-2 border-b border-border-subtle bg-gradient-to-r from-red-500/10 to-transparent flex items-center justify-between hover:bg-white/5 transition-colors cursor-pointer"
       >
         <div className="flex items-center gap-2">
           <Tv className="w-4 h-4 text-accent-red" />
@@ -186,7 +186,7 @@ export default function HotspotStreams() {
             {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
           </button>
         </div>
-      </button>
+      </div>
 
       {isExpanded && (
         <div className="p-2">
