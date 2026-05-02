@@ -79,15 +79,33 @@ export default function FinanceDashboardFull() {
 
         {/* RIGHT COLUMN */}
         <div className="hidden lg:flex flex-col gap-0 overflow-y-auto h-full border-l border-white/5 scrollbar-thin">
-          <NewsPanel category="forex" title="FOREX / ECONOMIC" maxArticles={4} accentColor="cyan" />
-          <NewsPanel category="fixed-income" title="FIXED INCOME" maxArticles={4} accentColor="blue" />
-          <MetalsMaterials />
-          <CryptoSectors />
-          <DefiTokens />
-          <NewsPanel category="commodities" title="COMMODITIES NEWS" maxArticles={3} accentColor="amber" />
-          <NewsPanel category="crypto" title="CRYPTO NEWS" maxArticles={3} accentColor="purple" />
-          <CentralBankWatch />
-          <MacroStress />
+          <div className="shrink-0">
+            <NewsPanel category="forex" title="FOREX / ECONOMIC" maxArticles={4} accentColor="cyan" />
+          </div>
+          <div className="shrink-0">
+            <NewsPanel category="fixed-income" title="FIXED INCOME" maxArticles={4} accentColor="blue" />
+          </div>
+          <div className="shrink-0">
+            <MetalsMaterials />
+          </div>
+          <div className="shrink-0">
+            <CryptoSectors />
+          </div>
+          <div className="shrink-0">
+            <DefiTokens />
+          </div>
+          <div className="shrink-0">
+            <NewsPanel category="commodities" title="COMMODITIES NEWS" maxArticles={3} accentColor="amber" />
+          </div>
+          <div className="shrink-0">
+            <NewsPanel category="crypto" title="CRYPTO NEWS" maxArticles={3} accentColor="purple" />
+          </div>
+          <div className="shrink-0">
+            <CentralBankWatch />
+          </div>
+          <div className="shrink-0">
+            <MacroStress />
+          </div>
         </div>
       </div>
 
