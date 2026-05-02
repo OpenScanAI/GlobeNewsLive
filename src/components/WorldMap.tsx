@@ -1090,232 +1090,64 @@ export default function WorldMap({
       });
     }
 
-    // FINANCE MODE LAYERS
+    // FINANCE MODE LAYERS — colored dot markers
     if (financeMode) {
-      // Stock Exchanges
-      if (financeLayers.includes("exchanges")) {
-        STOCK_EXCHANGES.forEach((ex) => {
-          const el = createMarkerElement("📈", "#00ff88", ex.name, 0.8);
-          const marker = new maplibregl.Marker({ element: el })
-            .setLngLat([ex.lon, ex.lat])
-            .setPopup(
-              new maplibregl.Popup({ offset: 25, className: "dark-popup" })
-                .setHTML(`<div class="text-white"><strong>📈 ${ex.name}</strong><br/>
-                <span class="text-xs">${ex.country} • ${ex.type}</span><br/>
-                <span class="text-xs text-gray-400">${ex.description}</span></div>`),
-            )
-            .addTo(map.current!);
-          markersRef.current.push(marker);
-        });
-      }
+      // Layer color mapping
+      const LAYER_COLORS: Record<string, string> = {
+        exchanges: "#00ff88",
+        centers: "#00aaff",
+        banks: "#ffaa00",
+        hubs: "#ff8800",
+        gcc: "#00ffaa",
+        cables: "#00aaff",
+        pipelines: "#ff8800",
+        internet: "#ff2244",
+        weather: "#ffaa00",
+        economic: "#aa44ff",
+        sanctions: "#ff2244",
+        cyber: "#ff00ff",
+        resilience: "#00ff88",
+        natural: "#ff6633",
+        daynight: "#00ccff",
+        "trade-routes": "#ffcc00",
+      };
 
-      // Financial Centers
-      if (financeLayers.includes("centers")) {
-        FINANCIAL_CENTERS.forEach((fc) => {
-          const el = createMarkerElement("🏦", "#00aaff", fc.name, 0.8);
+      // Helper to render finance locations as colored dots
+      const renderFinanceDots = (
+        items: Array<{ name: string; lat: number; lon: number; country: string; type: string; description?: string; status?: string }>,
+        layerId: string,
+        size = 8,
+        pulse = false,
+      ) => {
+        const color = LAYER_COLORS[layerId] || "#00ff88";
+        items.forEach((item) => {
+          const el = createDotMarkerElement(color, item.name, size, pulse);
           const marker = new maplibregl.Marker({ element: el })
-            .setLngLat([fc.lon, fc.lat])
+            .setLngLat([item.lon, item.lat])
             .setPopup(
-              new maplibregl.Popup({ offset: 25, className: "dark-popup" })
-                .setHTML(`<div class="text-white"><strong>🏦 ${fc.name}</strong><br/>
-                <span class="text-xs">${fc.country} • ${fc.type}</span><br/>
-                <span class="text-xs text-gray-400">${fc.description}</span></div>`),
+              new maplibregl.Popup({ offset: 15, className: "dark-popup" })
+                .setHTML(`<div class="text-white"><strong style="color:${color}">${item.name}</strong><br/>
+                <span class="text-xs">${item.country} • ${item.type}</span><br/>
+                <span class="text-xs text-gray-400">${item.description || ""}</span></div>`),
             )
             .addTo(map.current!);
           markersRef.current.push(marker);
         });
-      }
+      };
 
-      // Central Banks
-      if (financeLayers.includes("banks")) {
-        CENTRAL_BANKS.forEach((bank) => {
-          const el = createMarkerElement("🏛️", "#ffaa00", bank.name, 0.8);
-          const marker = new maplibregl.Marker({ element: el })
-            .setLngLat([bank.lon, bank.lat])
-            .setPopup(
-              new maplibregl.Popup({ offset: 25, className: "dark-popup" })
-                .setHTML(`<div class="text-white"><strong>🏛️ ${bank.name}</strong><br/>
-                <span class="text-xs">${bank.country} • ${bank.type}</span><br/>
-                <span class="text-xs text-gray-400">${bank.description}</span></div>`),
-            )
-            .addTo(map.current!);
-          markersRef.current.push(marker);
-        });
-      }
-
-      // Commodity Hubs
-      if (financeLayers.includes("hubs")) {
-        COMMODITY_HUBS.forEach((hub) => {
-          const el = createMarkerElement("⚡", "#ff8800", hub.name, 0.8);
-          const marker = new maplibregl.Marker({ element: el })
-            .setLngLat([hub.lon, hub.lat])
-            .setPopup(
-              new maplibregl.Popup({ offset: 25, className: "dark-popup" })
-                .setHTML(`<div class="text-white"><strong>⚡ ${hub.name}</strong><br/>
-                <span class="text-xs">${hub.country} • ${hub.type}</span><br/>
-                <span class="text-xs text-gray-400">${hub.description}</span></div>`),
-            )
-            .addTo(map.current!);
-          markersRef.current.push(marker);
-        });
-      }
-
-      // GCC Investments
-      if (financeLayers.includes("gcc")) {
-        GCC_INVESTMENTS.forEach((gcc) => {
-          const el = createMarkerElement("💰", "#00ffaa", gcc.name, 0.8);
-          const marker = new maplibregl.Marker({ element: el })
-            .setLngLat([gcc.lon, gcc.lat])
-            .setPopup(
-              new maplibregl.Popup({ offset: 25, className: "dark-popup" })
-                .setHTML(`<div class="text-white"><strong>💰 ${gcc.name}</strong><br/>
-                <span class="text-xs">${gcc.country} • ${gcc.type}</span><br/>
-                <span class="text-xs text-gray-400">${gcc.description}</span></div>`),
-            )
-            .addTo(map.current!);
-          markersRef.current.push(marker);
-        });
-      }
-
-      // Internet Disruptions
-      if (financeLayers.includes("internet")) {
-        INTERNET_DISRUPTIONS.forEach((net) => {
-          const color = net.status === "active" ? "#ff2244" : "#ffaa00";
-          const el = createMarkerElement("🔌", color, net.name, 0.8);
-          const marker = new maplibregl.Marker({ element: el })
-            .setLngLat([net.lon, net.lat])
-            .setPopup(
-              new maplibregl.Popup({ offset: 25, className: "dark-popup" })
-                .setHTML(`<div class="text-white"><strong>🔌 ${net.name}</strong><br/>
-                <span class="text-xs">${net.country} • ${net.type}</span><br/>
-                <span class="text-xs text-gray-400">${net.description}</span></div>`),
-            )
-            .addTo(map.current!);
-          markersRef.current.push(marker);
-        });
-      }
-
-      // Weather Alerts
-      if (financeLayers.includes("weather")) {
-        WEATHER_ALERTS.forEach((w) => {
-          const color = w.status === "warning" ? "#ffaa00" : "#00aaff";
-          const el = createMarkerElement("🌪️", color, w.name, 0.8);
-          const marker = new maplibregl.Marker({ element: el })
-            .setLngLat([w.lon, w.lat])
-            .setPopup(
-              new maplibregl.Popup({ offset: 25, className: "dark-popup" })
-                .setHTML(`<div class="text-white"><strong>🌪️ ${w.name}</strong><br/>
-                <span class="text-xs">${w.country} • ${w.type}</span><br/>
-                <span class="text-xs text-gray-400">${w.description}</span></div>`),
-            )
-            .addTo(map.current!);
-          markersRef.current.push(marker);
-        });
-      }
-
-      // Economic Centers
-      if (financeLayers.includes("economic")) {
-        ECONOMIC_CENTERS.forEach((ec) => {
-          const el = createMarkerElement("🏭", "#aa44ff", ec.name, 0.8);
-          const marker = new maplibregl.Marker({ element: el })
-            .setLngLat([ec.lon, ec.lat])
-            .setPopup(
-              new maplibregl.Popup({ offset: 25, className: "dark-popup" })
-                .setHTML(`<div class="text-white"><strong>🏭 ${ec.name}</strong><br/>
-                <span class="text-xs">${ec.country} • ${ec.type}</span><br/>
-                <span class="text-xs text-gray-400">${ec.description}</span></div>`),
-            )
-            .addTo(map.current!);
-          markersRef.current.push(marker);
-        });
-      }
-
-      // Sanctions Targets
-      if (financeLayers.includes("sanctions")) {
-        SANCTIONS_TARGETS.forEach((st) => {
-          const el = createMarkerElement("🚫", "#ff2244", st.name, 0.8);
-          const marker = new maplibregl.Marker({ element: el })
-            .setLngLat([st.lon, st.lat])
-            .setPopup(
-              new maplibregl.Popup({ offset: 25, className: "dark-popup" })
-                .setHTML(`<div class="text-white"><strong>🚫 ${st.name}</strong><br/>
-                <span class="text-xs">${st.country} • ${st.type}</span><br/>
-                <span class="text-xs text-gray-400">${st.description}</span></div>`),
-            )
-            .addTo(map.current!);
-          markersRef.current.push(marker);
-        });
-      }
-
-      // Cyber Threats
-      if (financeLayers.includes("cyber")) {
-        CYBER_THREATS.forEach((ct) => {
-          const color = ct.status === "active" ? "#ff00ff" : "#aa44ff";
-          const el = createMarkerElement("💻", color, ct.name, 0.8);
-          const marker = new maplibregl.Marker({ element: el })
-            .setLngLat([ct.lon, ct.lat])
-            .setPopup(
-              new maplibregl.Popup({ offset: 25, className: "dark-popup" })
-                .setHTML(`<div class="text-white"><strong>💻 ${ct.name}</strong><br/>
-                <span class="text-xs">${ct.country} • ${ct.type}</span><br/>
-                <span class="text-xs text-gray-400">${ct.description}</span></div>`),
-            )
-            .addTo(map.current!);
-          markersRef.current.push(marker);
-        });
-      }
-
-      // Resilience Index
-      if (financeLayers.includes("resilience")) {
-        RESILIENCE_INDEX.forEach((ri) => {
-          const color = ri.description.includes("HIGH") ? "#00ff88" : ri.description.includes("MEDIUM") ? "#ffaa00" : "#ff2244";
-          const el = createMarkerElement("🛡️", color, ri.name, 0.8);
-          const marker = new maplibregl.Marker({ element: el })
-            .setLngLat([ri.lon, ri.lat])
-            .setPopup(
-              new maplibregl.Popup({ offset: 25, className: "dark-popup" })
-                .setHTML(`<div class="text-white"><strong>🛡️ ${ri.name}</strong><br/>
-                <span class="text-xs">${ri.country} • ${ri.type}</span><br/>
-                <span class="text-xs text-gray-400">${ri.description}</span></div>`),
-            )
-            .addTo(map.current!);
-          markersRef.current.push(marker);
-        });
-      }
-
-      // Natural Events
-      if (financeLayers.includes("natural")) {
-        NATURAL_EVENTS.forEach((ne) => {
-          const el = createMarkerElement("🌋", "#ff6633", ne.name, 0.8);
-          const marker = new maplibregl.Marker({ element: el })
-            .setLngLat([ne.lon, ne.lat])
-            .setPopup(
-              new maplibregl.Popup({ offset: 25, className: "dark-popup" })
-                .setHTML(`<div class="text-white"><strong>🌋 ${ne.name}</strong><br/>
-                <span class="text-xs">${ne.country} • ${ne.type}</span><br/>
-                <span class="text-xs text-gray-400">${ne.description}</span></div>`),
-            )
-            .addTo(map.current!);
-          markersRef.current.push(marker);
-        });
-      }
-
-      // Day/Night Centers
-      if (financeLayers.includes("daynight")) {
-        DAY_NIGHT_CENTERS.forEach((dn) => {
-          const el = createMarkerElement("🌐", "#00ccff", dn.name, 0.8);
-          const marker = new maplibregl.Marker({ element: el })
-            .setLngLat([dn.lon, dn.lat])
-            .setPopup(
-              new maplibregl.Popup({ offset: 25, className: "dark-popup" })
-                .setHTML(`<div class="text-white"><strong>🌐 ${dn.name}</strong><br/>
-                <span class="text-xs">${dn.country} • ${dn.type}</span><br/>
-                <span class="text-xs text-gray-400">${dn.description}</span></div>`),
-            )
-            .addTo(map.current!);
-          markersRef.current.push(marker);
-        });
-      }
+      if (financeLayers.includes("exchanges")) renderFinanceDots(STOCK_EXCHANGES, "exchanges", 9);
+      if (financeLayers.includes("centers")) renderFinanceDots(FINANCIAL_CENTERS, "centers", 8);
+      if (financeLayers.includes("banks")) renderFinanceDots(CENTRAL_BANKS, "banks", 9, true);
+      if (financeLayers.includes("hubs")) renderFinanceDots(COMMODITY_HUBS, "hubs", 8);
+      if (financeLayers.includes("gcc")) renderFinanceDots(GCC_INVESTMENTS, "gcc", 9, true);
+      if (financeLayers.includes("internet")) renderFinanceDots(INTERNET_DISRUPTIONS, "internet", 9, true);
+      if (financeLayers.includes("weather")) renderFinanceDots(WEATHER_ALERTS, "weather", 8);
+      if (financeLayers.includes("economic")) renderFinanceDots(ECONOMIC_CENTERS, "economic", 8);
+      if (financeLayers.includes("sanctions")) renderFinanceDots(SANCTIONS_TARGETS, "sanctions", 9, true);
+      if (financeLayers.includes("cyber")) renderFinanceDots(CYBER_THREATS, "cyber", 9, true);
+      if (financeLayers.includes("resilience")) renderFinanceDots(RESILIENCE_INDEX, "resilience", 8);
+      if (financeLayers.includes("natural")) renderFinanceDots(NATURAL_EVENTS, "natural", 8);
+      if (financeLayers.includes("daynight")) renderFinanceDots(DAY_NIGHT_CENTERS, "daynight", 7);
     }
 
     // GPS Jamming zones
@@ -1643,5 +1475,57 @@ function createMarkerElement(
   `;
   el.textContent = emoji;
   el.title = title;
+  return el;
+}
+
+function createDotMarkerElement(
+  color: string,
+  title: string,
+  size = 10,
+  pulse = false,
+): HTMLElement {
+  const el = document.createElement("div");
+  el.className = "relative cursor-pointer flex items-center justify-center";
+  el.style.cssText = `width: ${size}px; height: ${size}px;`;
+  el.title = title;
+
+  // Inner dot
+  const dot = document.createElement("div");
+  dot.style.cssText = `
+    width: ${size}px;
+    height: ${size}px;
+    border-radius: 50%;
+    background: ${color};
+    border: 1.5px solid ${color}88;
+    box-shadow: 0 0 6px ${color}80, 0 0 12px ${color}40;
+    transition: transform 0.2s ease;
+  `;
+
+  // Optional pulse ring
+  if (pulse) {
+    const ring = document.createElement("div");
+    ring.style.cssText = `
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 1px solid ${color}60;
+      animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+      pointer-events: none;
+    `;
+    el.appendChild(ring);
+  }
+
+  el.appendChild(dot);
+
+  // Hover effect
+  el.addEventListener("mouseenter", () => {
+    dot.style.transform = "scale(1.4)";
+    dot.style.boxShadow = `0 0 10px ${color}, 0 0 20px ${color}80`;
+  });
+  el.addEventListener("mouseleave", () => {
+    dot.style.transform = "scale(1)";
+    dot.style.boxShadow = `0 0 6px ${color}80, 0 0 12px ${color}40`;
+  });
+
   return el;
 }
