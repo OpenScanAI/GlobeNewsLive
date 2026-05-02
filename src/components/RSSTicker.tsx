@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import AudioSummary from '@/components/AudioSummary';
 
 interface Headline {
   source: string;
@@ -95,6 +96,7 @@ export default function RSSTicker({ refreshInterval = 300000 }: RSSTickerProps) 
                 {h.source}
               </span>
               <span className="text-[11px] text-white/90">{h.title}</span>
+              <AudioSummary text={h.title} className="ml-1" />
               <span className="text-text-dim mx-4">•</span>
             </span>
           ))}
