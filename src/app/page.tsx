@@ -211,6 +211,21 @@ export default function Dashboard() {
   }, [signalsData, marketsData, predictionsData]);
 
   const signals = signalsData?.signals || [];
+  
+  // Filter signals by time range
+  const now = new Date();
+  const timeRangeMs = {
+    '1h': 60 * 60 * 1000,
+    '6h': 6 * 60 * 60 * 1000,
+    '24h': 24 * 60 * 60 * 1000,
+    '48h': 48 * 60 * 60 * 1000,
+    '7d': 7 * 24 * 60 * 60 * 1000,
+  };
+  const filteredSignals = signals.filter(s => {
+    const cutoff = timeRangeMs[timeFilter as keyof typeof timeRangeMs] || timeRangeMs['24h'];
+    return new Date(s.timestamp).getTime() > now.getTime() - cutoff;
+  });
+  
   const markets = marketsData?.markets || [];
   const predictions = predictionsData?.predictions || [];
   const earthquakes = earthquakesData?.earthquakes || [];
@@ -244,9 +259,6 @@ export default function Dashboard() {
       prev.includes(category) ? prev.filter(c => c !== category) : [...prev, category]
     );
   }, []);
-
-  // Filter signals by active categories
-  const filteredSignals = signals.filter(s => activeCategories.includes(s.category));
 
   // Skeleton loading - show immediate value while hydrating
   if (!isClient) {
@@ -426,7 +438,7 @@ export default function Dashboard() {
       <CommandPalette
         isOpen={commandPaletteOpen}
         onClose={() => setCommandPaletteOpen(false)}
-        signals={signals.map(s => ({ title: s.title, country: undefined, severity: s.severity }))}
+        signals={filteredSignals.map(s => ({ title: s.title, country: undefined, severity: s.severity }))}
         onNavigate={(view) => { if (view === 'warroom') setViewMode('warroom'); else setViewMode('dashboard'); }}
         onToggleLayer={handleLayerToggle}
       />
@@ -438,7 +450,7 @@ export default function Dashboard() {
       <CustomVideoWall isOpen={videoWallOpen} onClose={() => setVideoWallOpen(false)} />
 
       {/* Breaking News Banner */}
-      <BreakingNewsBanner signals={signals} notificationLevel={notificationLevel} />
+      <BreakingNewsBanner signals={filteredSignals} notificationLevel={notificationLevel} />
 
       {/* Mode Toggle - Desktop */}
       <div className="hidden lg:flex bg-void border-b border-border-default px-4 py-1.5 items-center justify-between">
@@ -491,8 +503,8 @@ export default function Dashboard() {
             <span>⌘K</span>
             <span className="hidden xl:inline">Search</span>
           </button>
-          <SearchBar signals={signals} />
-          <span className="text-[9px] text-text-dim font-mono hidden xl:inline">{signals.length} signals</span>
+          <SearchBar signals={filteredSignals} />
+          <span className="text-[9px] text-text-dim font-mono hidden xl:inline">{filteredSignals.length} / {signals.length} signals</span>
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
             className={`flex items-center gap-1.5 px-2 py-1 rounded text-[9px] font-mono ${soundEnabled ? 'bg-accent-green/20 text-accent-green' : 'bg-elevated text-text-dim'}`}
@@ -566,14 +578,31 @@ export default function Dashboard() {
       <div className="hidden lg:block absolute top-[140px] right-[300px] z-10">
         <EnhancedMapControls activeLayers={activeLayers} onLayerToggle={handleLayerToggle} />
       </div>
-      </div>
 
       {/* Mobile Layout */}
       <main className="lg:hidden flex-1 overflow-hidden pb-20">
-        {mobileView === 'feed' && <SignalFeed signals={signals} loading={signalsLoading || signalsValidating} onSignalClick={handleSignalClick} />}
+        {/* Mobile time filter bar */}
+        <div className="flex items-center gap-1 px-2 py-1.5 bg-elevated border-b border-border-default overflow-x-auto">
+          <span className="text-[9px] text-text-dim font-mono shrink-0">TIME:</span>
+          {['1h', '6h', '24h', '48h', '7d'].map(filter => (
+            <button
+              key={filter}
+              onClick={() => setTimeFilter(filter)}
+              className={`px-2 py-0.5 rounded text-[9px] font-mono shrink-0 transition-all ${
+                timeFilter === filter
+                  ? 'bg-accent-green/20 text-accent-green'
+                  : 'text-text-dim hover:text-text-muted'
+              }`}
+            >
+              {filter}
+            </button>
+          ))}
+          <span className="text-[9px] text-text-dim font-mono ml-auto shrink-0">{filteredSignals.length}/{signals.length}</span>
+        </div>
+        {mobileView === 'feed' && <SignalFeed signals={filteredSignals} loading={signalsLoading || signalsValidating} onSignalClick={handleSignalClick} />}
         {mobileView === 'map' && (
           <div className="h-full p-2 relative">
-            <WorldMap signals={signals} activeLayers={activeLayers} onLayerToggle={handleLayerToggle} earthquakes={earthquakes} />
+            <WorldMap signals={filteredSignals} activeLayers={activeLayers} onLayerToggle={handleLayerToggle} earthquakes={earthquakes} />
             <EnhancedMapControls activeLayers={activeLayers} onLayerToggle={handleLayerToggle} />
           </div>
         )}
