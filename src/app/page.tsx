@@ -80,6 +80,11 @@ const FinanceDashboardFull = dynamic(() => import('@/components/finance/FinanceD
   loading: () => <div className="h-screen flex items-center justify-center bg-void"><div className="text-accent-green animate-pulse font-mono">Loading Finance Dashboard...</div></div>
 });
 
+const EconomicDashboardFull = dynamic(() => import('@/components/economic/EconomicDashboardFull'), {
+  ssr: false,
+  loading: () => <div className="h-screen flex items-center justify-center bg-void"><div className="text-accent-green animate-pulse font-mono">Loading Economic Dashboard...</div></div>
+});
+
 const fetcher = async (url: string) => {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`API error: ${res.status}`);
@@ -106,8 +111,8 @@ function playAlertSound() {
   }
 }
 
-type ViewMode = 'dashboard' | 'warroom' | 'mapfocus' | 'finance';
-type MobileView = 'feed' | 'map' | 'markets' | 'tracking' | 'alerts';
+type ViewMode = 'dashboard' | 'warroom' | 'mapfocus' | 'finance' | 'economic';
+type MobileView = 'feed' | 'map' | 'markets' | 'tracking' | 'alerts' | 'economic';
 
 export default function Dashboard() {
   const [viewMode, setViewMode] = useState<ViewMode>('dashboard');
@@ -461,6 +466,12 @@ export default function Dashboard() {
             >
               💰 FINANCE
             </button>
+            <button
+              onClick={() => setViewMode('economic')}
+              className="px-3 py-1 rounded text-[10px] font-mono bg-[#378ADD]/20 text-[#378ADD]"
+            >
+              🏛️ ECONOMIC
+            </button>
           </div>
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
@@ -471,6 +482,52 @@ export default function Dashboard() {
         </div>
         <div className="flex-1 overflow-hidden">
           <FinanceDashboardFull />
+        </div>
+      </div>
+    );
+  }
+
+  // Economic View
+  if (viewMode === 'economic') {
+    return (
+      <div className="h-screen flex flex-col bg-void">
+        {/* Mode Toggle */}
+        <div className="bg-void border-b border-border-default px-4 py-1.5 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setViewMode('dashboard')}
+              className="px-3 py-1 rounded text-[10px] font-mono text-text-dim hover:text-white"
+            >
+              📊 DASHBOARD
+            </button>
+            <button
+              onClick={() => setViewMode('warroom')}
+              className="px-3 py-1 rounded text-[10px] font-mono text-text-dim hover:text-white"
+            >
+              ⚔️ WAR ROOM
+            </button>
+            <button
+              onClick={() => setViewMode('finance')}
+              className="px-3 py-1 rounded text-[10px] font-mono text-text-dim hover:text-white"
+            >
+              💰 FINANCE
+            </button>
+            <button
+              onClick={() => setViewMode('economic')}
+              className="px-3 py-1 rounded text-[10px] font-mono bg-[#378ADD]/20 text-[#378ADD]"
+            >
+              🏛️ ECONOMIC
+            </button>
+          </div>
+          <button
+            onClick={() => setSoundEnabled(!soundEnabled)}
+            className={`flex items-center gap-1.5 px-2 py-1 rounded text-[9px] font-mono ${soundEnabled ? 'bg-accent-green/20 text-accent-green' : 'bg-elevated text-text-dim'}`}
+          >
+            {soundEnabled ? '🔔' : '🔕'} ALERTS
+          </button>
+        </div>
+        <div className="flex-1 overflow-hidden">
+          <EconomicDashboardFull />
         </div>
       </div>
     );
@@ -535,6 +592,12 @@ export default function Dashboard() {
             className="px-3 py-1 rounded text-[10px] font-mono text-text-dim hover:text-white hover:bg-white/5"
           >
             💰 FINANCE
+          </button>
+          <button
+            onClick={() => setViewMode('economic')}
+            className="px-3 py-1 rounded text-[10px] font-mono text-text-dim hover:text-white hover:bg-white/5"
+          >
+            🏛️ ECONOMIC
           </button>
         </div>
         <div className="flex items-center gap-3">
@@ -729,6 +792,11 @@ export default function Dashboard() {
                 )}
               </div>
             </div>
+          </div>
+        )}
+        {mobileView === 'economic' && (
+          <div className="h-full overflow-hidden">
+            <EconomicDashboardFull />
           </div>
         )}
       </main>
