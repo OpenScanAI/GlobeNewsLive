@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import { Signal } from '@/types';
 
 interface MobileNavProps {
-  activeView: 'feed' | 'map' | 'markets' | 'tracking' | 'alerts';
-  onViewChange: (view: 'feed' | 'map' | 'markets' | 'tracking' | 'alerts') => void;
+  activeView: 'feed' | 'map' | 'markets' | 'tracking' | 'alerts' | 'economic';
+  onViewChange: (view: 'feed' | 'map' | 'markets' | 'tracking' | 'alerts' | 'economic') => void;
   criticalCount: number;
 }
 
@@ -39,7 +39,7 @@ export default function MobileNav({ activeView, onViewChange, criticalCount }: M
     const diff = swipeStart - swipeEnd;
     const minSwipeDistance = 50;
 
-    const views: ('feed' | 'map' | 'markets' | 'tracking' | 'alerts')[] = ['feed', 'map', 'markets', 'tracking', 'alerts'];
+    const views: ('feed' | 'map' | 'markets' | 'tracking' | 'alerts' | 'economic')[] = ['feed', 'map', 'markets', 'tracking', 'alerts', 'economic'];
     const currentIndex = views.indexOf(activeView);
 
     if (Math.abs(diff) > minSwipeDistance) {
@@ -61,6 +61,7 @@ export default function MobileNav({ activeView, onViewChange, criticalCount }: M
     { id: 'markets' as const, label: 'Markets', icon: '📈', badge: null },
     { id: 'tracking' as const, label: 'Track', icon: '✈️', badge: null },
     { id: 'alerts' as const, label: 'Alerts', icon: '🚨', badge: unreadAlerts },
+    { id: 'economic' as const, label: 'Econ', icon: '🏛️', badge: null },
   ];
 
   return (
