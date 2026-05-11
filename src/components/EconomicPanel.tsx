@@ -1,6 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import useSWR from 'swr';
+
+const fetcher = (url: string) => fetch(url).then(r => r.json());
 
 type TabId = 'indicators' | 'oil' | 'currency' | 'central-banks';
 
@@ -23,13 +26,6 @@ const INDICATORS: Indicator[] = [
   { name: 'US Debt/GDP', value: '122%', change: 1.2, country: '🇺🇸', lastUpdate: 'Q4 2025' },
 ];
 
-const OIL_DATA = [
-  { name: 'WTI Crude', price: 72.34, change: -1.2, unit: '$/bbl' },
-  { name: 'Brent Crude', price: 75.89, change: -0.9, unit: '$/bbl' },
-  { name: 'Natural Gas', price: 2.67, change: 0.14, unit: '$/MMBtu' },
-  { name: 'OPEC Basket', price: 74.21, change: -1.05, unit: '$/bbl' },
-];
-
 const CURRENCIES = [
   { pair: 'EUR/USD', rate: 1.0847, change: 0.0023 },
   { pair: 'USD/JPY', rate: 149.82, change: -0.34 },
@@ -49,6 +45,7 @@ const CENTRAL_BANKS = [
 
 export default function EconomicPanel() {
   const [activeTab, setActiveTab] = useState<TabId>('indicators');
+  const { data: energyData } = useSWR('/api/finance/energy', fetcher, { refreshInterval: 60000 });
 
   const tabs: { id: TabId; label: string; icon: string }[] = [
     { id: 'indicators', label: 'Indicators', icon: '📊' },
@@ -64,6 +61,14 @@ export default function EconomicPanel() {
     CUT: 'text-[#00ff88] border-[#00ff88]/30 bg-[#00ff88]/10',
     HIKE: 'text-red-400 border-red-400/30 bg-red-400/10',
   };
+
+  const livePrices = energyData?.prices;
+  const OIL_DATA = [
+    { name: 'WTI Crude', price: livePrices?.wti?.price ?? 72.34, change: livePrices?.wti?.change ?? -1.2, unit: '$/bbl' },
+    { name: 'Brent Crude', price: livePrices?.brent?.price ?? 75.89, change: livePrices?.brent?.change ?? -0.9, unit: '$/bbl' },
+    { name: 'Natural Gas', price: livePrices?.naturalGas?.price ?? 2.67, change: livePrices?.naturalGas?.change ?? 0.14, unit: '$/MMBtu' },
+    { name: 'OPEC Basket', price: 74.21, change: -1.05, unit: '$/bbl' },
+  ];
 
   return (
     <div className="h-full flex flex-col">
@@ -110,7 +115,7 @@ export default function EconomicPanel() {
 
         {activeTab === 'oil' && (
           <div className="flex flex-col gap-2">
-            <div className="text-[10px] text-white/30 font-mono uppercase tracking-wider px-1">ENERGY MARKETS</div>
+            <div className="text-[10px] text-white/30 font-mono uppercase tracking-wider px-1">ENERGY MARKETS {livePrices ? '● LIVE' : ''}</div>
             {OIL_DATA.map((oil, i) => (
               <div key={i} className="glass-panel p-3">
                 <div className="flex items-center justify-between mb-1">

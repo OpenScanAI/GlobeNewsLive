@@ -90,9 +90,9 @@ export default function NewsPanel({ category, title, maxArticles = 5, accentColo
 
               {/* Source + time */}
               <div className="flex items-center gap-1.5 mt-1">
-                <span className="text-[10px] text-cyan-600 font-mono">{article.source}</span>
+                <span className="text-[10px] text-cyan-600 font-mono truncate max-w-[80px]">{article.source}</span>
                 <span className="text-[10px] text-gray-600 font-mono">
-                  · {article.timeAgo}
+                  · {article.timeAgo || (article.publishedAt ? new Date(article.publishedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '')}
                 </span>
               </div>
             </a>

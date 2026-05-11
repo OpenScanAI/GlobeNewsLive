@@ -159,12 +159,12 @@ export default function WarRoom({ signals, conflicts = [] }: WarRoomProps) {
           .htmlAltitude(0.01)
           .htmlElement((d:any)=>makeEl(d))
           .arcsData([
-            {startLat:32,startLng:35,endLat:26.8,endLng:57,color:'#ff2020bb'},
-            {startLat:14.5,startLng:44.2,endLat:12.4,endLng:43.1,color:'#ff8800bb'},
-            {startLat:50,startLng:30,endLat:55.7,endLng:37.6,color:'#ff6600bb'},
-            {startLat:35.7,startLng:51.4,endLat:32,endLng:35,color:'#ffcc00bb'},
-            {startLat:38.9,startLng:-77,endLat:51.5,endLng:-0.1,color:'#4488ffbb'},
-            {startLat:39,startLng:125.8,endLat:38.9,endLng:-77,color:'#ffcc0088'},
+            {startLat:32,startLng:35,endLat:26.8,endLng:57,color:'#ff2020'},
+            {startLat:14.5,startLng:44.2,endLat:12.4,endLng:43.1,color:'#ff8800'},
+            {startLat:50,startLng:30,endLat:55.7,endLng:37.6,color:'#ff6600'},
+            {startLat:35.7,startLng:51.4,endLat:32,endLng:35,color:'#ffcc00'},
+            {startLat:38.9,startLng:-77,endLat:51.5,endLng:-0.1,color:'#4488ff'},
+            {startLat:39,startLng:125.8,endLat:38.9,endLng:-77,color:'#ffcc00'},
           ])
           .arcStartLat((d:any)=>d.startLat).arcStartLng((d:any)=>d.startLng)
           .arcEndLat((d:any)=>d.endLat).arcEndLng((d:any)=>d.endLng)

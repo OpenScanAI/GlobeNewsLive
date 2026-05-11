@@ -103,6 +103,14 @@ const FOREX = [
   { symbol: 'USDCNY=X', name: 'USD/CNY', display: 'USD/CNY' },
 ];
 
+const TREASURY_YIELDS = [
+  { symbol: '^TNX', name: '10Y Yield', display: '10Y' },
+  { symbol: '^FVX', name: '5Y Yield', display: '5Y' },
+  { symbol: '^IRX', name: '13W T-Bill', display: '13W' },
+];
+
+const VIX = { symbol: '^VIX', name: 'VIX', display: 'VIX' };
+
 function computeComposite(
   indices: Array<{ symbol: string; change: number | null }>,
   commodities: Array<{ symbol: string; change: number | null }>,
@@ -219,6 +227,19 @@ export async function GET() {
       { symbol: 'SOL', name: 'Solana', display: 'SOL', price: cg?.solana?.usd ?? null, change24h: cg?.solana?.usd_24h_change ?? null },
     ];
 
+    const vixData = await fetchYahooChart(VIX.symbol);
+    const vixResult = vixData ? { ...VIX, ...vixData } : { ...VIX, price: null, change: null, sparkline: [] as number[], currency: 'USD' };
+
+    const treasuryResults = [];
+    for (const meta of TREASURY_YIELDS) {
+      const data = await fetchYahooChart(meta.symbol);
+      if (data) {
+        treasuryResults.push({ ...meta, ...data });
+      } else {
+        treasuryResults.push({ ...meta, price: null, change: null, sparkline: [] as number[], currency: 'USD' });
+      }
+    }
+
     const { compositeScore, signals } = computeComposite(indexResults, commodityResults, cryptoResults, forexResults);
 
     return NextResponse.json({
@@ -226,6 +247,8 @@ export async function GET() {
       commodities: commodityResults,
       crypto: cryptoResults,
       forex: forexResults,
+      vix: vixResult,
+      treasuryYields: treasuryResults,
       composite: { score: compositeScore, signals },
       timestamp: new Date().toISOString(),
     });

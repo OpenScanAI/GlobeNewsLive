@@ -1,5 +1,4 @@
 "use client";
-import TechGlobe3D from "./TechGlobe3D";
 import {
   useState,
   useEffect,
@@ -83,7 +82,6 @@ import SignalFeed from "./SignalFeed";
 import WorldMap from "./WorldMap";
 import Globe3DView from "./Globe3DView";
 import MapToggleView from "./MapToggleView";
-import NKMissilePanel from "./NKMissilePanel";
 import ChatAnalystPanel from "./ChatAnalystPanel";
 import CountryIntelligenceIndex from "./CountryIntelligenceIndex";
 import CrossSourceSignals from "./CrossSourceSignals";
@@ -96,7 +94,6 @@ import TwitterFeed from "./TwitterFeed";
 import WorldFeed from "./WorldFeed";
 import PentagonPizzaIndex from "./PentagonPizzaIndex";
 import CountryInstabilityIndex from "./CountryInstabilityIndex";
-import HotspotStreams from "./HotspotStreams";
 import AttackTimeline from "./AttackTimeline";
 import AIInsights from "./AIInsights";
 import MarketTicker from "./MarketTicker";
@@ -827,12 +824,9 @@ export default function CustomDashboard({
         return <CrossSourceSignals />;
       case "chat-analyst":
         return <ChatAnalystPanel />;
-      case "nk-missiles":
-        return <NKMissilePanel />;
-      case "tech-globe":
-        return <TechGlobe3D />;
-      case "tech-globe": return <TechGlobe3D />; case "tech-globe": return <TechGlobe3D />; case "globe-3d":
-        return <Globe3DView signals={signals} />;
+      case "nk-missiles": return null; // CTA-13: removed
+      case "tech-globe": return null; // CTA-07: removed
+      case "globe-3d": return <Globe3DView signals={signals} />;
       case "risk-dashboard":
         return <RiskDashboard />;
       case "sentiment-meter":
@@ -845,8 +839,7 @@ export default function CustomDashboard({
         return <CyberFeed />;
       case "twitter-feed":
         return <TwitterFeed />;
-      case "hotspot-streams":
-        return <HotspotStreams />;
+      case "hotspot-streams": return null; // CTA-12: removed
       case "attack-timeline":
         return <AttackTimeline />;
       case "ai-insights":

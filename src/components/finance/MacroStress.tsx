@@ -7,8 +7,8 @@ const fetcher = (url: string) => fetch(url).then(r => r.json());
 
 export default function MacroStress() {
   const { data: vixData } = useSWR('/api/finance', fetcher, { refreshInterval: 30000 });
-  const indices = vixData?.indices ?? [];
-  const vix = indices.find((i: { symbol: string }) => i.symbol === '^VIX');
+  const vix = vixData?.vix;
+  const yields = vixData?.treasuryYields ?? [];
 
   // Derive stress score from VIX if available, else algorithmic fallback
   const vixVal = vix?.price ?? 18.5;
@@ -55,6 +55,19 @@ export default function MacroStress() {
           <span className={`text-lg font-mono font-bold ${color}`}>{Math.round(score)}</span>
           <span className={`block text-[10px] font-mono ${color}`}>{label} — {sub}</span>
         </div>
+        {/* Treasury Yields row */}
+        {yields.length > 0 && (
+          <div className="flex gap-2 mt-2">
+            {yields.map((y: { display: string; price: number | null; change: number | null }) => (
+              <div key={y.display} className="text-center">
+                <div className="text-[9px] font-mono text-white/40">{y.display}</div>
+                <div className={`text-[11px] font-mono ${(y.change ?? 0) >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                  {y.price?.toFixed(2) ?? '--'}%
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

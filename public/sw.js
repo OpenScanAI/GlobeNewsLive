@@ -107,6 +107,12 @@ self.addEventListener('fetch', (event) => {
   // Skip API calls - always go to network
   if (request.url.includes('/api/')) return;
 
+  // Skip Next.js build chunks - let browser handle these
+  if (request.url.includes('/_next/static/')) return;
+
+  // Skip the service worker itself
+  if (request.url.includes('/sw.js')) return;
+
   event.respondWith(
     fetch(request)
       .then((response) => {

@@ -143,6 +143,74 @@ const FALLBACK_SIGNALS: Signal[] = [
     region: "yemen",
   },
   {
+    id: "fallback-hanta-1",
+    title: "WHO confirms Andes hantavirus strain on cruise ship — person-to-person transmission possible",
+    severity: "CRITICAL",
+    category: "health",
+    source: "WHO",
+    sourceUrl: "https://www.who.int/emergencies",
+    timeAgo: "10 min ago",
+    timestamp: new Date(Date.now() - 10 * 60 * 1000),
+    summary: "62 additional passengers on MV Hondius cruise ship feared infected. Andes strain can spread human-to-human. Global contact tracing underway.",
+    region: "global",
+    lat: -7.32,
+    lon: -14.36,
+  },
+  {
+    id: "fallback-hanta-2",
+    title: "CDC activates Level 3 emergency response for hantavirus outbreak",
+    severity: "HIGH",
+    category: "health",
+    source: "CDC",
+    sourceUrl: "https://www.cdc.gov",
+    timeAgo: "25 min ago",
+    timestamp: new Date(Date.now() - 25 * 60 * 1000),
+    summary: "Lowest level emergency activation. Multiple US states monitoring cruise ship returnees. Healthcare providers alerted for hemorrhagic fever symptoms.",
+    region: "us",
+    lat: 39.83,
+    lon: -98.58,
+  },
+  {
+    id: "fallback-hanta-3",
+    title: "Canary Islands quarantine 3 cruise passengers in isolation unit",
+    severity: "HIGH",
+    category: "health",
+    source: "El Día",
+    sourceUrl: "https://eldia.es",
+    timeAgo: "40 min ago",
+    timestamp: new Date(Date.now() - 40 * 60 * 1000),
+    summary: "Three confirmed cases isolated at Hospital Universitario de Gran Canaria. Authorities tracing all 150+ passengers who disembarked before alert.",
+    region: "spain",
+    lat: 28.12,
+    lon: -15.43,
+  },
+  {
+    id: "fallback-hanta-4",
+    title: "Global race to trace MV Hondius passengers who left ship before outbreak confirmed",
+    severity: "HIGH",
+    category: "health",
+    source: "The Guardian",
+    sourceUrl: "https://theguardian.com",
+    timeAgo: "1 hour ago",
+    timestamp: new Date(Date.now() - 60 * 60 * 1000),
+    summary: "Dozens of passengers disembarked in multiple countries before isolation. Health authorities in UK, Germany, US, and Switzerland tracking individuals.",
+    region: "global",
+  },
+  {
+    id: "fallback-hanta-5",
+    title: "Swiss authorities confirm hantavirus case in passenger who left cruise early",
+    severity: "MEDIUM",
+    category: "health",
+    source: "Swiss Info",
+    sourceUrl: "https://swissinfo.ch",
+    timeAgo: "2 hours ago",
+    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+    summary: "First European mainland case confirmed. Individual traveled via commercial flights before diagnosis. Contact tracing on flights and at airports.",
+    region: "switzerland",
+    lat: 46.95,
+    lon: 7.45,
+  },
+  {
     id: "fallback-12",
     title: "IAEA calls for immediate access to inspect damaged Natanz facility",
     severity: "MEDIUM",
@@ -457,6 +525,32 @@ const FEEDS = [
     region: "shipping",
   },
 
+  // === HEALTH & PANDEMIC MONITORING ===
+  {
+    name: "WHO Disease Outbreak News",
+    url: "https://www.who.int/feeds/entity/csr/don/en/rss.xml",
+    tier: 1,
+    region: "global",
+  },
+  {
+    name: "CDC Health Alert Network",
+    url: "https://tools.cdc.gov/podcasts/feed.asp?feedid=183",
+    tier: 1,
+    region: "us",
+  },
+  {
+    name: "CIDRAP News",
+    url: "https://www.cidrap.umn.edu/news/178506/rss.xml",
+    tier: 1,
+    region: "global",
+  },
+  {
+    name: "ProMED Mail",
+    url: "https://promedmail.org/feed/",
+    tier: 1,
+    region: "global",
+  },
+
   // === NUCLEAR & ARMS CONTROL ===
   {
     name: "Arms Control Today",
@@ -501,7 +595,7 @@ const FEEDS = [
   },
 ];
 
-// Iran-related keywords for priority boosting
+// Iran-related keywords for region tagging only (NOT severity boosting)
 const IRAN_KEYWORDS = [
   "iran",
   "tehran",
@@ -518,66 +612,30 @@ const IRAN_KEYWORDS = [
   "fordow",
   "bushehr",
   "arak",
-  "hezbollah",
-  "houthi",
-  "houthis",
-  "ansar allah",
   "axis of resistance",
-  "militia",
-  "israel",
-  "idf",
-  "mossad",
-  "netanyahu",
-  "tel aviv",
-  "jerusalem",
-  "gaza",
-  "hamas",
-  "strike",
-  "missile",
-  "drone",
-  "attack",
-  "retaliation",
-  "escalation",
-  "war",
-  "nuclear",
-  "enrichment",
-  "uranium",
-  "centrifuge",
-  "iaea",
-  "jcpoa",
-  "sanctions",
-  "red sea",
-  "bab el mandeb",
-  "suez",
-  "shipping",
-  "tanker",
-  "cargo",
-  "syria",
-  "damascus",
-  "lebanon",
-  "beirut",
-  "iraq",
-  "baghdad",
-  "yemen",
-  "sanaa",
-  "centcom",
-  "pentagon",
-  "uss",
-  "b-52",
-  "f-35",
-  "aircraft carrier",
-  "deployment",
-  "oil",
-  "crude",
-  "brent",
-  "energy",
-  "pipeline",
-  "lng",
-  "proxy",
-  "militia",
-  "paramilitary",
   "revolutionary guard",
   "basij",
+];
+
+// Hantavirus/health keywords for region and topic tagging
+const HANTA_KEYWORDS = [
+  "hantavirus",
+  "andes strain",
+  "hemorrhagic fever",
+  "rodent borne",
+  "mv hondius",
+  "cruise ship",
+  "person to person",
+  "human to human",
+  "viral outbreak",
+  "quarantine",
+  "isolation unit",
+  "canary islands",
+  "gran canaria",
+  "switzerland",
+  "who",
+  "cdc",
+  "pandemic",
 ];
 
 // Simple XML parser for RSS and ATOM feeds
@@ -658,20 +716,10 @@ function parseRSS(xml: string, sourceName: string, region: string): Signal[] {
     const { severity } = classifyThreat(cleanTitle + " " + cleanDesc);
     const category = classifyCategory(cleanTitle + " " + cleanDesc);
 
-    let adjustedSeverity = severity;
-    if (iranRelevance >= 3) {
-      adjustedSeverity =
-        severity === "LOW"
-          ? "MEDIUM"
-          : severity === "MEDIUM"
-            ? "HIGH"
-            : severity;
-    }
-
     items.push({
       id: Buffer.from(link || cleanTitle).toString("base64"),
       title: cleanTitle,
-      severity: adjustedSeverity,
+      severity,
       category,
       source: sourceName,
       sourceUrl: link,
@@ -736,20 +784,10 @@ function parseAtom(xml: string, sourceName: string, region: string): Signal[] {
     const { severity } = classifyThreat(cleanTitle + " " + cleanDesc);
     const category = classifyCategory(cleanTitle + " " + cleanDesc);
 
-    let adjustedSeverity = severity;
-    if (iranRelevance >= 3) {
-      adjustedSeverity =
-        severity === "LOW"
-          ? "MEDIUM"
-          : severity === "MEDIUM"
-            ? "HIGH"
-            : severity;
-    }
-
     items.push({
       id: Buffer.from(link || cleanTitle).toString("base64"),
       title: cleanTitle,
-      severity: adjustedSeverity,
+      severity,
       category,
       source: sourceName,
       sourceUrl: link,

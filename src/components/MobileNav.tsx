@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-type MobileView = 'feed' | 'map' | 'markets' | 'tracking';
+type MobileView = 'feed' | 'map' | 'markets' | 'tracking' | 'alerts' | 'economic' | 'hermes';
 
 interface MobileNavProps {
   activeView: MobileView;
@@ -18,7 +18,9 @@ export default function MobileNav({ activeView, onViewChange, criticalCount }: M
           { id: 'feed' as MobileView, icon: '📡', label: 'Feed', badge: criticalCount },
           { id: 'map' as MobileView, icon: '🗺️', label: 'Map', badge: 0 },
           { id: 'markets' as MobileView, icon: '📈', label: 'Markets', badge: 0 },
-          { id: 'tracking' as MobileView, icon: '🌍', label: 'Track', badge: 0 },
+          { id: 'alerts' as MobileView, icon: '🔔', label: 'Alerts', badge: criticalCount },
+          { id: 'economic' as MobileView, icon: '🏛️', label: 'Econ', badge: 0 },
+          { id: 'hermes' as MobileView, icon: '🤖', label: 'Hermes', badge: 0 },
         ].map(item => (
           <button
             key={item.id}
