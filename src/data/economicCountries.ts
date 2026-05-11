@@ -16,6 +16,15 @@ export interface MacroData {
   gdpPerCapita: number | null;  // NY.GDP.PCAP.CD
   tradeBalance: number | null;   // calculated
   lastUpdated: string;
+  // Sparkline history arrays (last 12 months / quarters)
+  gdpSparkline: number[];
+  inflationSparkline: number[];
+  unemploymentSparkline: number[];
+  debtSparkline: number[];
+  reservesSparkline: number[];
+  exportsSparkline: number[];
+  importsSparkline: number[];
+  tradeBalanceSparkline: number[];
 }
 
 export interface RiskScore {

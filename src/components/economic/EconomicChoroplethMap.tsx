@@ -336,30 +336,26 @@ export default function EconomicChoroplethMap({
   }, [countries, loaded, selectedCode, onCountryClick, geojsonData]);
 
   return (
-    <div className="rounded-lg border border-white/[0.08] bg-[#0d0d14] overflow-hidden flex flex-col" style={{ height }}>
-      <div className="flex items-center justify-between px-3 py-2 border-b border-white/[0.06]">
+    <div className="rounded-xl border border-white/[0.06] bg-[#0d0d14] overflow-hidden flex flex-col hover:border-white/10 transition-all duration-200" style={{ height }}>
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/[0.06]">
         <div className="flex items-center gap-2">
           <span className="text-sm">🗺️</span>
-          <span className="font-mono text-[10px] font-bold tracking-wider text-white/80">
-            ECONOMIC RISK MAP
+          <span className="font-mono text-[10px] font-bold tracking-wider text-white/80 uppercase">
+            Economic Risk Map
           </span>
         </div>
         <div className="flex items-center gap-2">
           <span className="flex items-center gap-1 text-[9px] font-mono text-emerald-400">
-            <span className="w-2 h-2 rounded-full bg-emerald-400/30 border border-emerald-400/50" />
-            Low
+            <span className="w-2 h-2 rounded-full bg-emerald-400/30 border border-emerald-400/50" />Low
           </span>
           <span className="flex items-center gap-1 text-[9px] font-mono text-yellow-400">
-            <span className="w-2 h-2 rounded-full bg-yellow-400/30 border border-yellow-400/50" />
-            Med
+            <span className="w-2 h-2 rounded-full bg-yellow-400/30 border border-yellow-400/50" />Med
           </span>
           <span className="flex items-center gap-1 text-[9px] font-mono text-orange-400">
-            <span className="w-2 h-2 rounded-full bg-orange-400/30 border border-orange-400/50" />
-            High
+            <span className="w-2 h-2 rounded-full bg-orange-400/30 border border-orange-400/50" />High
           </span>
           <span className="flex items-center gap-1 text-[9px] font-mono text-rose-400">
-            <span className="w-2 h-2 rounded-full bg-rose-400/30 border border-rose-400/50" />
-            Crit
+            <span className="w-2 h-2 rounded-full bg-rose-400/30 border border-rose-400/50" />Crit
           </span>
         </div>
       </div>

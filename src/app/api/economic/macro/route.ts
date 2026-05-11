@@ -5,7 +5,9 @@ import {
 } from '@/data/economicCountries';
 
 const WB_BASE = 'https://api.worldbank.org/v2/country';
-const CACHE_TTL = 60 * 60 * 1000; // 1 hour
+const CACHE_TTL = 4 * 60 * 60 * 1000; // 4 hours (World Bank updates slowly)
+const RETRIES = 2;
+const TIMEOUT_MS = 8000;
 
 let cache: { data: Record<string, MacroData>; timestamp: number } | null = null;
 
@@ -44,10 +46,10 @@ const FALLBACK_DATA: Record<string, Partial<MacroData>> = {
   bd: { gdpGrowth: 5.8, inflation: 9.7, unemployment: 5.3, debtToGdp: 39, reserves: 20000, exports: 46000, imports: 70000, gdpPerCapita: 2688 },
 };
 
-async function fetchWBIndicator(iso3: string, indicator: string): Promise<number | null> {
+async function fetchWBIndicator(iso3: string, indicator: string, attempt = 1): Promise<number | null> {
   try {
     const url = `${WB_BASE}/${iso3}/indicator/${indicator}?format=json&per_page=5&date=2020:2024`;
-    const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
+    const res = await fetch(url, { signal: AbortSignal.timeout(TIMEOUT_MS) });
     if (!res.ok) return null;
     const json = await res.json();
     const arr = Array.isArray(json) ? json[1] || json[0] : null;
@@ -59,7 +61,33 @@ async function fetchWBIndicator(iso3: string, indicator: string): Promise<number
     }
     return null;
   } catch {
+    if (attempt < RETRIES) {
+      await new Promise(r => setTimeout(r, 500 * attempt));
+      return fetchWBIndicator(iso3, indicator, attempt + 1);
+    }
     return null;
+  }
+}
+
+async function fetchWBSparkline(iso3: string, indicator: string, attempt = 1): Promise<number[]> {
+  try {
+    const url = `${WB_BASE}/${iso3}/indicator/${indicator}?format=json&per_page=15&date=2015:2024`;
+    const res = await fetch(url, { signal: AbortSignal.timeout(TIMEOUT_MS) });
+    if (!res.ok) return [];
+    const json = await res.json();
+    const arr = Array.isArray(json) ? json[1] || json[0] : null;
+    if (!Array.isArray(arr)) return [];
+    const values = arr
+      .filter((item: any) => item.value !== null && item.value !== undefined)
+      .map((item: any) => typeof item.value === 'number' ? item.value : parseFloat(item.value))
+      .reverse(); // chronological order
+    return values.slice(-12); // last 12 data points
+  } catch {
+    if (attempt < RETRIES) {
+      await new Promise(r => setTimeout(r, 500 * attempt));
+      return fetchWBSparkline(iso3, indicator, attempt + 1);
+    }
+    return [];
   }
 }
 
@@ -71,6 +99,8 @@ async function fetchCountryData(code: string): Promise<MacroData> {
   const [
     gdpGrowth, inflation, unemployment, debtToGdp,
     reserves, exports, imports, gdpPerCapita,
+    gdpSparkline, inflationSparkline, unemploymentSparkline, debtSparkline,
+    reservesSparkline, exportsSparkline, importsSparkline,
   ] = await Promise.all([
     fetchWBIndicator(iso3, WB_INDICATORS.gdpGrowth),
     fetchWBIndicator(iso3, WB_INDICATORS.inflation),
@@ -80,6 +110,13 @@ async function fetchCountryData(code: string): Promise<MacroData> {
     fetchWBIndicator(iso3, WB_INDICATORS.exports),
     fetchWBIndicator(iso3, WB_INDICATORS.imports),
     fetchWBIndicator(iso3, WB_INDICATORS.gdpPerCapita),
+    fetchWBSparkline(iso3, WB_INDICATORS.gdpGrowth),
+    fetchWBSparkline(iso3, WB_INDICATORS.inflation),
+    fetchWBSparkline(iso3, WB_INDICATORS.unemployment),
+    fetchWBSparkline(iso3, WB_INDICATORS.debtToGdp),
+    fetchWBSparkline(iso3, WB_INDICATORS.reserves),
+    fetchWBSparkline(iso3, WB_INDICATORS.exports),
+    fetchWBSparkline(iso3, WB_INDICATORS.imports),
   ]);
 
   // Use fallback where live data is missing
@@ -108,6 +145,14 @@ async function fetchCountryData(code: string): Promise<MacroData> {
     gdpPerCapita: gdpPC,
     tradeBalance,
     lastUpdated: new Date().toISOString(),
+    gdpSparkline: gdpSparkline.length > 0 ? gdpSparkline : [],
+    inflationSparkline: inflationSparkline.length > 0 ? inflationSparkline : [],
+    unemploymentSparkline: unemploymentSparkline.length > 0 ? unemploymentSparkline : [],
+    debtSparkline: debtSparkline.length > 0 ? debtSparkline : [],
+    reservesSparkline: reservesSparkline.length > 0 ? reservesSparkline : [],
+    exportsSparkline: exportsSparkline.length > 0 ? exportsSparkline : [],
+    importsSparkline: importsSparkline.length > 0 ? importsSparkline : [],
+    tradeBalanceSparkline: [],
   };
 }
 

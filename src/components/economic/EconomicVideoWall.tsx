@@ -9,6 +9,7 @@ interface StreamChannel {
   logo: string;
   region: string;
   embedUrl: string | null;
+  hlsUrl: string | null;
   directUrl: string;
   color: string;
 }
@@ -135,11 +136,11 @@ export default function EconomicVideoWall({ selectedCode }: { selectedCode: stri
 
   if (loading) {
     return (
-      <div className="rounded-lg border border-white/[0.08] bg-[#0d0d14] p-3 mb-4">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-          <div className="lg:col-span-1 aspect-video bg-white/5 rounded animate-pulse" />
+      <div className="rounded-xl border border-white/[0.06] bg-[#0d0d14] p-4 mb-5">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="lg:col-span-1 aspect-video bg-white/5 rounded-lg animate-pulse" />
           <div className="lg:col-span-2 space-y-2">
-            {[1,2,3].map(i => <div key={i} className="h-12 bg-white/5 rounded animate-pulse" />)}
+            {[1,2,3].map(i => <div key={i} className="h-12 bg-white/5 rounded-lg animate-pulse" />)}
           </div>
         </div>
       </div>
@@ -149,7 +150,7 @@ export default function EconomicVideoWall({ selectedCode }: { selectedCode: stri
   if (!stream) return null;
 
   return (
-    <div className="rounded-lg border border-white/[0.08] bg-[#0d0d14] p-3 mb-4">
+    <div className="rounded-xl border border-white/[0.06] bg-[#0d0d14] p-4 mb-5 hover:border-white/10 transition-all duration-200">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="text-sm">📺</span>
@@ -175,7 +176,23 @@ export default function EconomicVideoWall({ selectedCode }: { selectedCode: stri
             className="relative aspect-video rounded-md overflow-hidden border border-white/[0.08]"
             style={{ backgroundColor: stream.color + '15' }}
           >
-            {stream.embedUrl ? (
+            {stream.hlsUrl ? (
+              <video
+                src={stream.hlsUrl}
+                className="absolute inset-0 w-full h-full"
+                autoPlay
+                muted
+                playsInline
+                controls={false}
+                onError={(e) => {
+                  // HLS failed, show fallback
+                  const target = e.currentTarget;
+                  target.style.display = 'none';
+                  const fallback = target.nextElementSibling as HTMLElement;
+                  if (fallback) fallback.style.display = 'flex';
+                }}
+              />
+            ) : stream.embedUrl ? (
               <iframe
                 src={stream.embedUrl}
                 className="absolute inset-0 w-full h-full"
@@ -183,20 +200,23 @@ export default function EconomicVideoWall({ selectedCode }: { selectedCode: stri
                 allowFullScreen
                 loading="lazy"
               />
-            ) : (
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-xl mb-1">{stream.logo}</span>
-                <span className="text-[9px] font-mono text-white/40">{stream.name}</span>
-                <a 
-                  href={stream.directUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-1 px-2 py-0.5 rounded bg-white/10 text-[8px] font-mono text-white/60 hover:bg-white/20 transition-colors"
-                >
-                  Open →
-                </a>
-              </div>
-            )}
+            ) : null}
+            {/* Fallback UI - hidden by default, shown on error */}
+            <div 
+              className="absolute inset-0 flex-col items-center justify-center"
+              style={{ display: stream.hlsUrl || stream.embedUrl ? 'none' : 'flex' }}
+            >
+              <span className="text-xl mb-1">{stream.logo}</span>
+              <span className="text-[9px] font-mono text-white/40">{stream.name}</span>
+              <a 
+                href={stream.directUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-1 px-2 py-0.5 rounded bg-white/10 text-[8px] font-mono text-white/60 hover:bg-white/20 transition-colors"
+              >
+                Open →
+              </a>
+            </div>
 
             {/* Overlay */}
             <div className="absolute inset-x-0 top-0 flex items-center justify-between px-1.5 py-0.5 bg-gradient-to-b from-black/70 to-transparent">
@@ -204,7 +224,7 @@ export default function EconomicVideoWall({ selectedCode }: { selectedCode: stri
                 <span className="text-[9px]">{stream.logo}</span>
                 <span className="text-[8px] font-mono font-bold text-white/80">{stream.shortName}</span>
               </span>
-              {stream.embedUrl && (
+              {stream.hlsUrl && (
                 <span className="flex items-center gap-0.5">
                   <span className="w-1 h-1 rounded-full bg-red-500 animate-pulse" />
                   <span className="text-[7px] font-mono text-red-400">LIVE</span>

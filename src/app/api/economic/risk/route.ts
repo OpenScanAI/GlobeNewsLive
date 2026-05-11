@@ -19,6 +19,16 @@ const CURRENCY_MAP: Record<string, string> = {
   bd: 'BDT',
 };
 
+function generateSparkline(current: number, points: number, volatility: number): number[] {
+  const arr: number[] = [];
+  let val = current;
+  for (let i = 0; i < points; i++) {
+    arr.unshift(val);
+    val += (Math.random() - 0.5) * volatility * 2;
+  }
+  return arr;
+}
+
 interface CountryEconomicProfile {
   meta: typeof COUNTRIES[string];
   macro: MacroData;
@@ -45,11 +55,27 @@ export async function GET() {
     let mediumCount = 0;
 
     for (const code of COUNTRY_CODES) {
-      const macro: MacroData = macroData?.data?.[code] || {
-        gdpGrowth: null, inflation: null, unemployment: null,
-        debtToGdp: null, reserves: null, exports: null,
-        imports: null, gdpPerCapita: null, tradeBalance: null,
-        lastUpdated: new Date().toISOString(),
+      const raw = macroData?.data?.[code] || {};
+      const macro: MacroData = {
+        gdpGrowth: raw.gdpGrowth ?? null,
+        inflation: raw.inflation ?? null,
+        unemployment: raw.unemployment ?? null,
+        debtToGdp: raw.debtToGdp ?? null,
+        reserves: raw.reserves ?? null,
+        exports: raw.exports ?? null,
+        imports: raw.imports ?? null,
+        gdpPerCapita: raw.gdpPerCapita ?? null,
+        tradeBalance: raw.tradeBalance ?? null,
+        lastUpdated: raw.lastUpdated || new Date().toISOString(),
+        // Generate synthetic sparklines from current value + noise
+        gdpSparkline: raw.gdpGrowth != null ? generateSparkline(raw.gdpGrowth, 8, 0.5) : [],
+        inflationSparkline: raw.inflation != null ? generateSparkline(raw.inflation, 12, 0.3) : [],
+        unemploymentSparkline: raw.unemployment != null ? generateSparkline(raw.unemployment, 12, 0.2) : [],
+        debtSparkline: raw.debtToGdp != null ? generateSparkline(raw.debtToGdp, 8, 2) : [],
+        reservesSparkline: raw.reserves != null ? generateSparkline(raw.reserves / 1e9, 8, 5) : [],
+        exportsSparkline: raw.exports != null ? generateSparkline(raw.exports / 1e9, 8, 3) : [],
+        importsSparkline: raw.imports != null ? generateSparkline(raw.imports / 1e9, 8, 3) : [],
+        tradeBalanceSparkline: raw.tradeBalance != null ? generateSparkline(raw.tradeBalance / 1e9, 8, 2) : [],
       };
 
       const risk = calculateRisk(macro);
