@@ -77,11 +77,22 @@ export default function MapFocusView({ signals, conflicts, earthquakes, activeLa
   const [mounted, setMounted] = useState(false);
   const [timeFilter, setTimeFilter] = useState('24h');
   const [region, setRegion] = useState('global');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('globenews_mapfocus_sidebar_open');
+      return saved !== null ? saved === 'true' : false;
+    }
+    return false;
+  });
   const [search, setSearch] = useState('');
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
 
   useEffect(() => { setMounted(true); }, []);
+
+  // Persist sidebar state
+  useEffect(() => {
+    localStorage.setItem('globenews_mapfocus_sidebar_open', String(sidebarOpen));
+  }, [sidebarOpen]);
 
   const toggleGroup = (group: string) => {
     setCollapsedGroups(prev => {
