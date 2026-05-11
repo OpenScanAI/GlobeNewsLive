@@ -23,7 +23,7 @@ interface TheaterPosture {
 const DEFCON_CONFIG: Record<number, { label: string; color: string; bg: string; desc: string }> = {
   1: { label: 'COCKED PISTOL', color: '#ff0000', bg: '#ff000022', desc: 'Maximum readiness' },
   2: { label: 'FAST PACE', color: '#ff4444', bg: '#ff444422', desc: 'Armed forces ready' },
-  3: { label: 'ROUND HOUSE', color: '#ff8800', bg: '#ff880022', desc: 'Air force ready in 15min' },
+  3: { label: '', color: '#ff8800', bg: '#ff880022', desc: 'Air force ready in 15min' },
   4: { label: 'DOUBLE TAKE', color: '#ffaa00', bg: '#ffaa0022', desc: 'Above normal readiness' },
   5: { label: 'FADE OUT', color: '#00ff88', bg: '#00ff8822', desc: 'Normal peacetime readiness' },
 };

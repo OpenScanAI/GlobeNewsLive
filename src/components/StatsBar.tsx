@@ -21,7 +21,6 @@ export default function StatsBar({ activeConflicts, militaryAlerts, highSeverity
   }, []);
 
   const defconColors: Record<number,string> = { 1:'#ff0000', 2:'#ff4400', 3:'#ffcc00', 4:'#00ccff', 5:'#00ff88' };
-  const defconNames: Record<number,string> = { 1:'COCKED PISTOL', 2:'FAST PACE', 3:'ROUND HOUSE', 4:'DOUBLE TAKE', 5:'FADE OUT' };
 
   return (
     <footer className="border-t border-border-default bg-elevated/80 backdrop-blur-sm">
@@ -56,7 +55,7 @@ export default function StatsBar({ activeConflicts, militaryAlerts, highSeverity
           <div>
             <div className="font-mono text-[7px] text-text-dim">DEFCON</div>
             <div className="font-mono text-[10px] font-bold" style={{ color: defconColors[defcon] }}>
-              {defcon} · {defconNames[defcon]}
+              {defcon}
             </div>
           </div>
         </div>
