@@ -15,18 +15,9 @@ const TIME_FILTERS = ['1h', '6h', '24h', '48h', '7d'];
 
 export default function StatsBar({ activeConflicts, militaryAlerts, highSeverity, criticalSeverity, timeFilter, onTimeFilterChange }: StatsBarProps) {
   const [defcon, setDefcon] = useState<number>(3);
-  const [markets, setMarkets] = useState<{name:string;value:string;change:string;direction:string}[]>([]);
-  const [tick, setTick] = useState(0);
 
   useEffect(() => {
     fetch('/api/defcon').then(r=>r.json()).then(d=>setDefcon(d.defcon?.level||3)).catch(()=>{});
-    fetch('/api/markets').then(r=>r.json()).then(d=>setMarkets((d.markets||[]).slice(0,6))).catch(()=>{});
-  }, []);
-
-  // Animate market ticker
-  useEffect(() => {
-    const t = setInterval(() => setTick(p => p + 1), 4000);
-    return () => clearInterval(t);
   }, []);
 
   const defconColors: Record<number,string> = { 1:'#ff0000', 2:'#ff4400', 3:'#ffcc00', 4:'#00ccff', 5:'#00ff88' };
@@ -34,26 +25,6 @@ export default function StatsBar({ activeConflicts, militaryAlerts, highSeverity
 
   return (
     <footer className="border-t border-border-default bg-elevated/80 backdrop-blur-sm">
-      {/* Market ticker strip */}
-      {markets.length > 0 && (
-        <div className="border-b border-border-subtle bg-black/30 px-4 py-1 flex items-center gap-6 overflow-x-auto scrollbar-none">
-          <span className="text-[8px] font-mono text-text-dim flex-shrink-0">MARKETS</span>
-          {markets.map((m,i) => (
-            <div key={i} className="flex items-center gap-1.5 flex-shrink-0">
-              <span className="text-[9px] font-mono text-text-dim">{m.name}</span>
-              <span className="text-[9px] font-mono text-white font-bold">{m.value}</span>
-              <span className={`text-[8px] font-mono ${m.direction==='up'?'text-accent-green':'text-accent-red'}`}>
-                {m.direction==='up'?'▲':'▼'} {m.change}
-              </span>
-            </div>
-          ))}
-          <div className="flex items-center gap-1 flex-shrink-0 ml-auto">
-            <div className="w-1.5 h-1.5 bg-accent-green rounded-full animate-pulse"/>
-            <span className="text-[8px] font-mono text-text-dim">LIVE</span>
-          </div>
-        </div>
-      )}
-
       {/* Main stats bar */}
       <div className="px-4 py-2 flex items-center justify-between gap-4">
         {/* Left: conflict stats */}

@@ -15,6 +15,7 @@ import NewsPanel from './NewsPanel';
 import FinanceTicker from './FinanceTicker';
 import MarketComposite from './MarketComposite';
 import FinanceLiveNews from './FinanceLiveNews';
+import CyberThreatPanel from './CyberThreatPanel';
 import WorldClockPanel from '@/components/WorldClockPanel';
 import EconomicPanel from '@/components/EconomicPanel';
 
@@ -89,6 +90,11 @@ export default function FinanceDashboardFull() {
           {/* Economic Panel — indicators, oil, currency, central banks */}
           <div className="shrink-0 h-[280px] overflow-hidden">
             <EconomicPanel />
+          </div>
+
+          {/* Cyber Threats */}
+          <div className="shrink-0">
+            <CyberThreatPanel />
           </div>
 
           {/* News panels */}

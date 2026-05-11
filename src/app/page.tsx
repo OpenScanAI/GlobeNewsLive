@@ -29,7 +29,6 @@ import FlightRadar from '@/components/FlightRadar';
 import FlightTracker from '@/components/FlightTracker';
 import SearchBar from '@/components/SearchBar';
 import CyberFeed from '@/components/CyberFeed';
-import HotspotStreams from '@/components/HotspotStreams';
 import CustomDashboard from '@/components/CustomDashboard';
 import MapStreams from '@/components/MapStreams';
 import RiskDashboard from '@/components/RiskDashboard';
@@ -37,12 +36,10 @@ import { usePersistentTimeFilter } from '@/hooks/usePersistentTimeFilter';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import SentimentMeter from '@/components/SentimentMeter';
 import KeyboardShortcutsHelp from '@/components/KeyboardShortcutsHelp';
-import ExportPanel from '@/components/ExportPanel';
 import BookmarkManager, { useSignalBookmarks, BookmarkButton } from '@/components/BookmarkManager';
 import FullscreenToggle from '@/components/FullscreenToggle';
 import RefreshCountdown from '@/components/RefreshCountdown';
 import CustomAlertsPanel, { useCustomAlerts } from '@/components/CustomAlertsPanel';
-import SignalComparison from '@/components/SignalComparison';
 import AdvancedFilters from '@/components/AdvancedFilters';
 import EmailNotifications from '@/components/EmailNotifications';
 import CustomVideoWall from '@/components/CustomVideoWall';
@@ -54,7 +51,6 @@ import MapFocusView from '@/components/MapFocusView';
 import { MapViewProvider } from '@/contexts/MapViewContext';
 import BreakingNewsBanner from '@/components/BreakingNewsBanner';
 import TVMode from '@/components/TVMode';
-import RSSTicker from '@/components/RSSTicker';
 import HelpPin from '@/components/HelpPin';
 import PortStatusPanel from '@/components/PortStatusPanel';
 import GlobalSituationHeader from '@/components/GlobalSituationHeader';
@@ -65,6 +61,7 @@ import ActivityWaterfall from '@/components/ActivityWaterfall';
 import FeedPipelineMonitor from '@/components/FeedPipelineMonitor';
 import EnhancedMapControls from '@/components/EnhancedMapControls';
 import LiveNewsTicker from '@/components/LiveNewsTicker';
+import HealthAlertPanel from '@/components/HealthAlertPanel';
 import { Signal, MarketData, PredictionMarket, ThreatLevel, SignalCategory } from '@/types';
 import { getThreatLevelFromSignals } from '@/lib/classify';
 import { ACTIVE_CONFLICTS } from '@/lib/feeds';
@@ -83,6 +80,11 @@ const FinanceDashboardFull = dynamic(() => import('@/components/finance/FinanceD
 const EconomicDashboardFull = dynamic(() => import('@/components/economic/EconomicDashboardFull'), {
   ssr: false,
   loading: () => <div className="h-screen flex items-center justify-center bg-void"><div className="text-accent-green animate-pulse font-mono">Loading Economic Dashboard...</div></div>
+});
+
+const HealthThreatPanel = dynamic(() => import('@/components/HealthThreatPanel'), {
+  ssr: false,
+  loading: () => <div className="h-screen flex items-center justify-center bg-void"><div className="text-accent-green animate-pulse font-mono">Loading Health Threat Monitor...</div></div>
 });
 
 const fetcher = async (url: string) => {
@@ -111,7 +113,7 @@ function playAlertSound() {
   }
 }
 
-type ViewMode = 'dashboard' | 'warroom' | 'mapfocus' | 'finance' | 'economic';
+type ViewMode = 'dashboard' | 'warroom' | 'mapfocus' | 'finance' | 'economic' | 'health';
 type MobileView = 'feed' | 'map' | 'markets' | 'tracking' | 'alerts' | 'economic';
 
 export default function Dashboard() {
@@ -134,10 +136,9 @@ export default function Dashboard() {
   const [videoWallOpen, setVideoWallOpen] = useState(false);
   
   // New feature states
-  const [timeRange, setTimeRange] = useState<TimeRange>('24h');
   const [activeRegion, setActiveRegion] = useState<Region>('global');
   const [activeCategories, setActiveCategories] = useState<SignalCategory[]>([
-    'conflict', 'military', 'diplomacy', 'cyber', 'disaster', 'economy', 'politics', 'terrorism', 'protest', 'infrastructure'
+    'conflict', 'military', 'diplomacy', 'cyber', 'disaster', 'economy', 'politics', 'terrorism', 'protest', 'infrastructure', 'health'
   ]);
   
   // Multi-language support
@@ -400,6 +401,12 @@ export default function Dashboard() {
             >
               ⚔️ WAR ROOM
             </button>
+            <button
+              onClick={() => setViewMode('health')}
+              className="px-3 py-1 rounded text-[10px] font-mono text-text-dim hover:text-white"
+            >
+              🦠 HEALTH
+            </button>
           </div>
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
@@ -472,6 +479,12 @@ export default function Dashboard() {
             >
               🏛️ ECONOMIC
             </button>
+            <button
+              onClick={() => setViewMode('health')}
+              className="px-3 py-1 rounded text-[10px] font-mono text-text-dim hover:text-white"
+            >
+              🦠 HEALTH
+            </button>
           </div>
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
@@ -482,6 +495,50 @@ export default function Dashboard() {
         </div>
         <div className="flex-1 overflow-hidden">
           <FinanceDashboardFull />
+        </div>
+      </div>
+    );
+  }
+
+  // Health Threat View
+  if (viewMode === 'health') {
+    return (
+      <div className="h-screen flex flex-col bg-void">
+        {/* Mode Toggle */}
+        <div className="bg-void border-b border-border-default px-4 py-1.5 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setViewMode('dashboard')}
+              className="px-3 py-1 rounded text-[10px] font-mono text-text-dim hover:text-white"
+            >
+              📊 DASHBOARD
+            </button>
+            <button
+              onClick={() => setViewMode('warroom')}
+              className="px-3 py-1 rounded text-[10px] font-mono text-text-dim hover:text-white"
+            >
+              ⚔️ WAR ROOM
+            </button>
+            <button
+              onClick={() => setViewMode('finance')}
+              className="px-3 py-1 rounded text-[10px] font-mono text-text-dim hover:text-white"
+            >
+              💰 FINANCE
+            </button>
+            <button
+              onClick={() => setViewMode('economic')}
+              className="px-3 py-1 rounded text-[10px] font-mono text-text-dim hover:text-white"
+            >
+              📈 ECONOMIC
+            </button>
+            <span className="px-3 py-1 rounded text-[10px] font-mono text-accent-green bg-accent-green/10">
+              🦠 HEALTH
+            </span>
+          </div>
+          <FullscreenToggle />
+        </div>
+        <div className="flex-1 overflow-hidden">
+          <HealthThreatPanel />
         </div>
       </div>
     );
@@ -517,6 +574,12 @@ export default function Dashboard() {
               className="px-3 py-1 rounded text-[10px] font-mono bg-[#378ADD]/20 text-[#378ADD]"
             >
               🏛️ ECONOMIC
+            </button>
+            <button
+              onClick={() => setViewMode('health')}
+              className="px-3 py-1 rounded text-[10px] font-mono text-text-dim hover:text-white"
+            >
+              🦠 HEALTH
             </button>
           </div>
           <button
@@ -599,14 +662,18 @@ export default function Dashboard() {
           >
             🏛️ ECONOMIC
           </button>
+          <button
+            onClick={() => setViewMode('health')}
+            className="px-3 py-1 rounded text-[10px] font-mono text-text-dim hover:text-white hover:bg-white/5"
+          >
+            🦠 HEALTH
+          </button>
         </div>
         <div className="flex items-center gap-3">
           <KeyboardShortcutsHelp />
-          <ExportPanel signals={signals} />
           <BookmarkManager signals={signals} bookmarks={bookmarks} onClear={clearBookmarks} onToggle={toggleBookmark} />
           <FullscreenToggle />
           <CustomAlertsPanel alerts={alerts} onAdd={addAlert} onRemove={removeAlert} onToggle={toggleAlert} />
-          <SignalComparison signals={signals} />
           <AdvancedFilters signals={signals} onFilterChange={(filtered) => console.log('Filtered:', filtered.length)} />
           <EmailNotifications signals={signals} />
           <PushNotificationManager signals={signals} criticalCount={criticalCount} />
@@ -657,7 +724,7 @@ export default function Dashboard() {
 
       {/* NEW: Control Bars */}
       <div className="hidden lg:flex items-center gap-2 px-4 py-1.5 bg-void border-b border-border-default overflow-x-auto">
-        <TimeRangeSelector value={timeRange} onChange={setTimeRange} />
+        <TimeRangeSelector value={timeFilter as TimeRange} onChange={setTimeFilter} />
         <RegionSelector value={activeRegion} onChange={setActiveRegion} />
         <div className="flex-1 min-w-0">
           <CategoryFilterBar active={activeCategories} onToggle={handleCategoryToggle} />
@@ -683,6 +750,7 @@ export default function Dashboard() {
         </WorldMonitorLayout>
         {/* NEW: Right Sidebar Widgets */}
         <aside className="w-[280px] border-l border-border-default bg-void overflow-y-auto p-2 space-y-2 hidden xl:block">
+          <HealthAlertPanel signals={filteredSignals} />
           <ActivityWaterfall signals={filteredSignals} maxItems={12} />
           <FeedPipelineMonitor />
         </aside>
@@ -722,6 +790,7 @@ export default function Dashboard() {
         )}
         {mobileView === 'markets' && (
           <div className="h-full overflow-y-auto p-2 space-y-2">
+            <HealthAlertPanel signals={filteredSignals} maxItems={3} />
             <SituationBrief />
             <TradingChart symbol="XAUUSD" height={250} />
             <MarketTicker markets={markets} loading={marketsLoading || marketsValidating} />
@@ -804,10 +873,6 @@ export default function Dashboard() {
       <MobileNavEnhanced activeView={mobileView} onViewChange={setMobileView} criticalCount={criticalCount} />
 
       {/* RSS News Ticker - Desktop */}
-      <div className="hidden lg:block">
-        <RSSTicker />
-      </div>
-
       <div className="hidden lg:block">
         <StatsBar activeConflicts={ACTIVE_CONFLICTS.length} militaryAlerts={militaryCount} highSeverity={highCount} criticalSeverity={criticalCount} timeFilter={timeFilter} onTimeFilterChange={setTimeFilter} />
       </div>

@@ -10,7 +10,8 @@ export type SignalCategory =
   | 'politics' 
   | 'terrorism'
   | 'protest'
-  | 'infrastructure';
+  | 'infrastructure'
+  | 'health';
 
 export interface Signal {
   id: string;

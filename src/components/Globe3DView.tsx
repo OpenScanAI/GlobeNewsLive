@@ -49,39 +49,29 @@ export default function Globe3DView({ signals = [] }: Globe3DViewProps) {
     return next;
   });
 
-  // Fetch all data
+  // Fetch all data — non-blocking progressive loading (CTA-06)
   useEffect(() => {
     const fetchAll = async () => {
-      const [f, e, s, c, fi, m] = await Promise.allSettled([
-        fetch('/api/flights').then(r=>r.json()),
-        fetch('/api/earthquakes').then(r=>r.json()),
-        fetch('/api/ships').then(r=>r.json()),
-        fetch('/api/cyber').then(r=>r.json()),
-        fetch('/api/fires').then(r=>r.json()),
-        fetch('/api/military-aircraft').then(r=>r.json()),
-      ]);
-      const fl = f.status==='fulfilled' ? f.value.flights||[] : [];
-      const eq = e.status==='fulfilled' ? e.value.earthquakes||[] : [];
-      const sh = s.status==='fulfilled' ? s.value.ships||[] : [];
-      const cy = c.status==='fulfilled' ? c.value.threats||[] : [];
-      const fi2 = fi.status==='fulfilled' ? fi.value.fires||[] : [];
-      const mil = m.status==='fulfilled' ? m.value.aircraft||[] : [];
-      setFlights(fl); setEarthquakes(eq); setShips(sh);
-      setCyberThreats(cy); setFires(fi2); setMilitaryAircraft(mil);
-      setCounts({
-        signals: signals.filter(s=>s.lat&&s.lon).length || 10,
-        flights: fl.length, earthquakes: eq.length,
-        ships: sh.length, cyber: cy.length,
-        fires: fi2.length, military: mil.length,
+      // Set signal counts immediately from props
+      setCounts(prev => ({ ...prev, signals: signals.filter(s=>s.lat&&s.lon).length || 10 }));
+
+      // Fire off all fetches in parallel without blocking
+      const fetchers = [
+        { url: '/api/flights', setter: (d:any) => { setFlights(d.flights||[]); setCounts(p=>({...p, flights: (d.flights||[]).length})); } },
+        { url: '/api/earthquakes', setter: (d:any) => { setEarthquakes(d.earthquakes||[]); setCounts(p=>({...p, earthquakes: (d.earthquakes||[]).length})); } },
+        { url: '/api/ships', setter: (d:any) => { setShips(d.ships||[]); setCounts(p=>({...p, ships: (d.ships||[]).length})); } },
+        { url: '/api/cyber', setter: (d:any) => { setCyberThreats(d.threats||[]); setCounts(p=>({...p, cyber: (d.threats||[]).length})); } },
+        { url: '/api/fires', setter: (d:any) => { setFires(d.fires||[]); setCounts(p=>({...p, fires: (d.fires||[]).length})); } },
+        { url: '/api/military-aircraft', setter: (d:any) => { setMilitaryAircraft(d.aircraft||[]); setCounts(p=>({...p, military: (d.aircraft||[]).length})); } },
+      ];
+
+      fetchers.forEach(({url, setter}) => {
+        fetch(url).then(r => r.json()).then(setter).catch(() => {});
       });
     };
     fetchAll();
     const interval = setInterval(fetchAll, 60000);
     return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    setCounts(prev => ({ ...prev, signals: signals.filter(s=>s.lat&&s.lon).length || 10 }));
   }, [signals]);
 
   const getHtmlMarkers = useCallback(() => {
@@ -174,15 +164,15 @@ export default function Globe3DView({ signals = [] }: Globe3DViewProps) {
 
   const getArcs = useCallback(() => {
     const arcs: any[] = [
-      {startLat:32,startLng:35,endLat:26.8,endLng:57,color:'#ff2020cc'},
-      {startLat:14.5,startLng:44.2,endLat:12.4,endLng:43.1,color:'#ff8800cc'},
-      {startLat:50,startLng:30,endLat:55.7,endLng:37.6,color:'#ff6600cc'},
-      {startLat:38.9,startLng:-77,endLat:51.5,endLng:-0.1,color:'#4488ffcc'},
-      {startLat:35.7,startLng:51.4,endLat:26.8,endLng:57,color:'#ff4400cc'},
+      {startLat:32,startLng:35,endLat:26.8,endLng:57,color:'#ff2020'},
+      {startLat:14.5,startLng:44.2,endLat:12.4,endLng:43.1,color:'#ff8800'},
+      {startLat:50,startLng:30,endLat:55.7,endLng:37.6,color:'#ff6600'},
+      {startLat:38.9,startLng:-77,endLat:51.5,endLng:-0.1,color:'#4488ff'},
+      {startLat:35.7,startLng:51.4,endLat:26.8,endLng:57,color:'#ff4400'},
     ];
     if (activeLayers.has('cyber')) {
       cyberThreats.slice(0,5).filter(c=>c.lat&&c.lon).forEach(c=>{
-        arcs.push({startLat:c.lat,startLng:c.lon,endLat:48.8,endLng:2.3,color:'#00ff8880'});
+        arcs.push({startLat:c.lat,startLng:c.lon,endLat:48.8,endLng:2.3,color:'#00ff88'});
       });
     }
     return arcs;

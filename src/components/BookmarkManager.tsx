@@ -181,11 +181,30 @@ export default function BookmarkManager({ signals, bookmarks, onClear, onToggle 
                       'text-accent-green'
                     }`}>●</span>
                     <div className="flex-1 min-w-0">
-                      <div className="text-[11px] text-white truncate">{signal.title}</div>
+                      <a
+                        href={signal.sourceUrl || '#'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[11px] text-white truncate hover:text-accent-blue hover:underline block"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {signal.title}
+                      </a>
                       <div className="flex items-center gap-2 mt-1">
                         <span className="text-[9px] text-text-dim">{signal.source}</span>
                         <span className="text-[9px] text-text-dim">•</span>
                         <span className="text-[9px] text-text-dim">{signal.timeAgo}</span>
+                        {signal.sourceUrl && (
+                          <a
+                            href={signal.sourceUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[9px] text-accent-blue hover:underline"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            Open ↗
+                          </a>
+                        )}
                       </div>
                     </div>
                     <button

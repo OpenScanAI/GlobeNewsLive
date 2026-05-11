@@ -29,7 +29,6 @@ export default function TVMode({ isActive, onExit, interval = 45000 }: TVModePro
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const controlsTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const scrollToPanel = useCallback((panelId: string) => {
     const el = document.getElementById(panelId);
@@ -56,17 +55,12 @@ export default function TVMode({ isActive, onExit, interval = 45000 }: TVModePro
     setTimeLeft(customInterval);
   }, [customInterval, scrollToPanel]);
 
-  // Enter fullscreen
+  // TV Mode is a layout/presentation mode, NOT browser fullscreen (CTA-03)
+  // User can press F11 manually if they want fullscreen alongside TV Mode
   useEffect(() => {
-    if (isActive && document.documentElement.requestFullscreen) {
-      document.documentElement.requestFullscreen().catch(() => {});
-      setIsFullscreen(true);
-    }
+    // No automatic fullscreen - TV Mode is purely a presentation overlay
     return () => {
-      if (document.fullscreenElement) {
-        document.exitFullscreen().catch(() => {});
-        setIsFullscreen(false);
-      }
+      // cleanup if needed
     };
   }, [isActive]);
 

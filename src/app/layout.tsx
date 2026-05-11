@@ -25,8 +25,8 @@ const geist = Geist({
 
 export const metadata: Metadata = {
   title: 'GlobeNews Live | Real-Time Global Intelligence',
-  description: 'Real-time conflict monitoring, military activity tracking, and geopolitical intelligence.',
-  keywords: 'OSINT, intelligence, conflict, military, geopolitical, Iran, Israel, war, real-time, news, global',
+  description: 'Real-time conflict monitoring, military activity tracking, health alerts, and geopolitical intelligence.',
+  keywords: 'OSINT, intelligence, conflict, military, geopolitical, hantavirus, health alert, pandemic, real-time, news, global',
   icons: { icon: '/favicon.svg', shortcut: '/favicon.svg', apple: '/favicon.svg' },
   openGraph: {
     title: 'GlobeNews Live',
@@ -44,6 +44,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} ${geist.variable}`}>
+      <head>
+        <link rel="preload" href="/_next/static/chunks/globe.gl.js" as="script" crossOrigin="anonymous" />
+      </head>
       <body className="bg-void text-white min-h-screen">
         {children}
       </body>

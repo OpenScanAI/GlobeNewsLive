@@ -370,6 +370,15 @@ body {
   border: 1px dashed rgba(0, 255, 136, 0.25) !important;
 }
 
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+}
+
 /* Smooth dragging */
 .react-grid-item.react-draggable-dragging {
   transition: none !important;

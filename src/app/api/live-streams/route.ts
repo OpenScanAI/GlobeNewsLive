@@ -179,11 +179,17 @@ export async function GET() {
     const ytIds = KNOWN_YOUTUBE_IDS[channel.id] || [];
     const primaryYtId = ytIds[0];
     
+    // Prefer HLS over YouTube embed (YouTube blocks cross-site playback)
+    const embedUrl = channel.hlsUrl
+      ? null // HLS needs video tag, not iframe
+      : primaryYtId
+        ? `https://www.youtube.com/embed/${primaryYtId}?autoplay=1&mute=1&rel=0`
+        : null;
+
     return {
       ...channel,
-      embedUrl: primaryYtId 
-        ? `https://www.youtube.com/embed/${primaryYtId}?autoplay=1&mute=1&rel=0`
-        : null,
+      embedUrl,
+      hlsUrl: channel.hlsUrl || null,
       youtubeUrl: primaryYtId
         ? `https://www.youtube.com/watch?v=${primaryYtId}`
         : `https://www.youtube.com/results?search_query=${encodeURIComponent(channel.youtubeSearch || channel.name + ' live')}&sp=EgJAAQ%3D%3D`,

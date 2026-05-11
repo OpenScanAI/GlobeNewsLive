@@ -5,6 +5,7 @@ interface PanelHeaderProps {
   live?: boolean;
   count?: number;
   accentColor?: string;
+  timestamp?: string;
 }
 
 const COLOR_MAP: Record<string, string> = {
@@ -19,7 +20,7 @@ const COLOR_MAP: Record<string, string> = {
   green: 'bg-emerald-500',
 };
 
-export function PanelHeader({ title, live, count, accentColor = 'cyan' }: PanelHeaderProps) {
+export function PanelHeader({ title, live, count, accentColor = 'cyan', timestamp }: PanelHeaderProps) {
   const barClass = COLOR_MAP[accentColor] || 'bg-cyan-500';
 
   return (
@@ -29,6 +30,11 @@ export function PanelHeader({ title, live, count, accentColor = 'cyan' }: PanelH
         {title}
       </span>
       <div className="flex items-center gap-1">
+        {timestamp && (
+          <span className="text-[8px] font-mono text-white/30 hidden sm:inline">
+            {new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </span>
+        )}
         {live && (
           <span className="text-[9px] font-mono px-1.5 py-0.5 bg-green-900/30 text-green-500 border border-green-800/30 rounded tracking-wider">
             LIVE

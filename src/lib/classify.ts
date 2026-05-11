@@ -6,25 +6,29 @@ const THREAT_KEYWORDS: Record<Severity, string[]> = {
     'nuclear strike', 'nuclear attack', 'invasion', 'chemical attack', 'coup',
     'martial law', 'missile impact', 'mass casualty', 'declaration of war',
     'troops invaded', 'air strike kills', 'bombing kills', 'terror attack',
-    'hostages', 'assassination', 'nuclear', 'ww3', 'world war'
+    'hostages', 'assassination', 'nuclear', 'ww3', 'world war',
+    'pandemic declared', 'health emergency', 'global outbreak'
   ],
   HIGH: [
     'airstrike', 'missile launch', 'missile strike', 'troops deployed',
     'cyberattack', 'border clash', 'naval confrontation', 'military strike',
     'drone strike', 'explosion', 'bombing', 'shells', 'artillery',
     'fighter jets', 'warship', 'military buildup', 'mobilization',
-    'escalation', 'retaliation', 'combat', 'casualties'
+    'escalation', 'retaliation', 'combat', 'casualties',
+    'hantavirus', 'virus outbreak', 'person-to-person transmission', 'quarantine zone'
   ],
   MEDIUM: [
     'sanctions', 'military exercise', 'protest', 'election dispute',
     'trade war', 'embassy closure', 'naval patrol', 'diplomatic crisis',
     'tensions', 'warning', 'threat', 'condemn', 'ultimatum',
-    'emergency', 'evacuate', 'refugees', 'displacement'
+    'emergency', 'evacuate', 'refugees', 'displacement',
+    'outbreak', 'infection cluster', 'disease spread', 'screening'
   ],
   LOW: [
     'diplomatic meeting', 'trade agreement', 'ceasefire talks',
     'aid delivery', 'joint statement', 'un resolution', 'peace talks',
-    'negotiation', 'summit', 'bilateral', 'cooperation'
+    'negotiation', 'summit', 'bilateral', 'cooperation',
+    'vaccine development', 'health monitoring', 'preparedness'
   ],
   INFO: []
 };
@@ -39,7 +43,8 @@ const CATEGORY_KEYWORDS: Record<SignalCategory, string[]> = {
   politics: ['election', 'vote', 'president', 'prime minister', 'parliament', 'government'],
   terrorism: ['terror', 'isis', 'al-qaeda', 'extremist', 'radical', 'bomb', 'hostage'],
   protest: ['protest', 'demonstration', 'riot', 'unrest', 'civil', 'activist'],
-  infrastructure: ['power', 'grid', 'pipeline', 'internet', 'outage', 'blackout', 'cable']
+  infrastructure: ['power', 'grid', 'pipeline', 'internet', 'outage', 'blackout', 'cable'],
+  health: ['pandemic', 'outbreak', 'virus', 'hantavirus', 'disease', 'epidemic', 'infection', 'quarantine', 'vaccine', 'who', 'cdc', 'health emergency', 'quarantine', 'cruise ship', 'transmission']
 };
 
 export function classifyThreat(text: string): { severity: Severity; confidence: number } {
