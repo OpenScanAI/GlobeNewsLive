@@ -99,22 +99,6 @@ function WorldMonitorLayoutInner({ children, signals, activeLayers, onLayerToggl
           </div>
         </div>
 
-        {/* Center: GLOBAL SITUATION */}
-        <div className="hidden md:flex items-center gap-3">
-          <span className="text-[10px] font-mono font-bold text-white/50 tracking-widest">GLOBAL SITUATION</span>
-          <div className="flex items-center gap-1.5 px-2 py-0.5 rounded border"
-            style={{ borderColor: defconColors[defcon] + '40', backgroundColor: defconColors[defcon] + '10' }}>
-            <span className="text-[8px] font-mono text-white/50">DEFCON</span>
-            <span className="text-[10px] font-mono font-bold" style={{ color: defconColors[defcon] }}>{defcon}</span>
-          </div>
-          {criticalCount > 0 && (
-            <div className="flex items-center gap-1 px-2 py-0.5 rounded bg-accent-red/10 border border-accent-red/30">
-              <div className="w-1.5 h-1.5 bg-accent-red rounded-full animate-pulse" />
-              <span className="text-[9px] font-mono text-accent-red font-bold">{criticalCount} CRITICAL</span>
-            </div>
-          )}
-        </div>
-
         {/* Right: 2D/3D toggle + signal count */}
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1 bg-black/30 rounded border border-white/10 p-0.5">

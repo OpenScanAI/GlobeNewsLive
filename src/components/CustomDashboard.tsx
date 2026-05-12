@@ -91,6 +91,7 @@ import FlightRadar from "./FlightRadar";
 import MilitaryTracker from "./MilitaryTracker";
 import CyberFeed from "./CyberFeed";
 import TwitterFeed from "./TwitterFeed";
+import HotspotStreams from "./HotspotStreams";
 import WorldFeed from "./WorldFeed";
 import PentagonPizzaIndex from "./PentagonPizzaIndex";
 import CountryInstabilityIndex from "./CountryInstabilityIndex";
@@ -839,7 +840,7 @@ export default function CustomDashboard({
         return <CyberFeed />;
       case "twitter-feed":
         return <TwitterFeed />;
-      case "hotspot-streams": return null; // CTA-12: removed
+      case "hotspot-streams": return <HotspotStreams />;
       case "attack-timeline":
         return <AttackTimeline />;
       case "ai-insights":

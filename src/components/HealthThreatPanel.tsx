@@ -110,7 +110,14 @@ export default function HealthThreatPanel() {
     .sort((a, b) => new Date(b.reported_date).getTime() - new Date(a.reported_date).getTime())
     .slice(0, 10);
 
-  const countsByType = (type: string) => outbreaks.filter(o => o.signal_type === type).length;
+  const countsByType = (type: string) => {
+    if (type === 'confirmed_case') {
+      return outbreaks
+        .filter(o => o.signal_type === 'confirmed_case')
+        .reduce((sum, o) => sum + (o.case_count || 1), 0);
+    }
+    return outbreaks.filter(o => o.signal_type === type).length;
+  };
 
   // Aggregate stats — derive from ALL outbreaks (same source as sidebar counts)
   const confirmedCases = outbreaks

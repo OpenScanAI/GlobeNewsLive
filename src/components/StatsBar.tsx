@@ -1,7 +1,5 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-
 interface StatsBarProps {
   activeConflicts: number;
   militaryAlerts: number;
@@ -14,14 +12,6 @@ interface StatsBarProps {
 const TIME_FILTERS = ['1h', '6h', '24h', '48h', '7d'];
 
 export default function StatsBar({ activeConflicts, militaryAlerts, highSeverity, criticalSeverity, timeFilter, onTimeFilterChange }: StatsBarProps) {
-  const [defcon, setDefcon] = useState<number>(3);
-
-  useEffect(() => {
-    fetch('/api/defcon').then(r=>r.json()).then(d=>setDefcon(d.defcon?.level||3)).catch(()=>{});
-  }, []);
-
-  const defconColors: Record<number,string> = { 1:'#ff0000', 2:'#ff4400', 3:'#ffcc00', 4:'#00ccff', 5:'#00ff88' };
-
   return (
     <footer className="border-t border-border-default bg-elevated/80 backdrop-blur-sm">
       {/* Main stats bar */}
@@ -40,24 +30,6 @@ export default function StatsBar({ activeConflicts, militaryAlerts, highSeverity
               <span className={`font-mono text-[11px] font-bold ${s.color}`}>{s.value}</span>
             </div>
           ))}
-        </div>
-
-        {/* Center: DEFCON */}
-        <div className="flex items-center gap-2 px-3 py-1 rounded border"
-          style={{ borderColor: defconColors[defcon]+'40', backgroundColor: defconColors[defcon]+'10' }}>
-          <div className="flex items-center gap-1">
-            {[1,2,3,4,5].map(l => (
-              <div key={l} className="w-2 h-4 rounded-sm transition-all"
-                style={{ backgroundColor: l <= defcon ? defconColors[defcon]+'60' : '#ffffff10',
-                  ...(l === defcon ? { backgroundColor: defconColors[defcon], boxShadow: `0 0 6px ${defconColors[defcon]}` } : {}) }} />
-            ))}
-          </div>
-          <div>
-            <div className="font-mono text-[7px] text-text-dim">DEFCON</div>
-            <div className="font-mono text-[10px] font-bold" style={{ color: defconColors[defcon] }}>
-              {defcon}
-            </div>
-          </div>
         </div>
 
         {/* Right: time filter + version */}

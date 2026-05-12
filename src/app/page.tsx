@@ -15,7 +15,6 @@ import SourceHealth from '@/components/SourceHealth';
 import MobileNavEnhanced from '@/components/MobileNavEnhanced';
 import StatsBar from '@/components/StatsBar';
 import SituationBrief from '@/components/SituationBrief';
-import DefconIndicator from '@/components/DefconIndicator';
 import TwitterFeed from '@/components/TwitterFeed';
 import MilitaryTracker from '@/components/MilitaryTracker';
 import LiveVideoPanel from '@/components/LiveVideoPanel';
@@ -47,11 +46,8 @@ import TVMode from '@/components/TVMode';
 import HelpPin from '@/components/HelpPin';
 import PortStatusPanel from '@/components/PortStatusPanel';
 import GlobalSituationHeader from '@/components/GlobalSituationHeader';
-import ActivityWaterfall from '@/components/ActivityWaterfall';
-import FeedPipelineMonitor from '@/components/FeedPipelineMonitor';
 import EnhancedMapControls from '@/components/EnhancedMapControls';
 import LiveNewsTicker from '@/components/LiveNewsTicker';
-import HealthAlertPanel from '@/components/HealthAlertPanel';
 import { Signal, MarketData, PredictionMarket, ThreatLevel, SignalCategory } from '@/types';
 import { useSignalBookmarks } from '@/components/BookmarkManager';
 import FullscreenToggle from '@/components/FullscreenToggle';
@@ -127,15 +123,6 @@ export default function Dashboard() {
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [tvMode, setTvMode] = useState(false);
   const [videoWallOpen, setVideoWallOpen] = useState(false);
-  const [widgetsPanelOpen, setWidgetsPanelOpen] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('globenews_widgets_panel_open');
-      return saved !== null ? saved === 'true' : false;
-    }
-    return false;
-  });
-  
-  // New feature states
   const [activeRegion, setActiveRegion] = useState<Region>('global');
   const [activeCategories, setActiveCategories] = useState<SignalCategory[]>([
     'conflict', 'military', 'diplomacy', 'cyber', 'disaster', 'economy', 'politics', 'terrorism', 'protest', 'infrastructure', 'health'
@@ -165,10 +152,6 @@ export default function Dashboard() {
     }
   }, []);
 
-  // Persist widgets panel state
-  useEffect(() => {
-    localStorage.setItem('globenews_widgets_panel_open', String(widgetsPanelOpen));
-  }, [widgetsPanelOpen]);
 
   // Command Palette shortcut
   useEffect(() => {
@@ -718,23 +701,6 @@ export default function Dashboard() {
             onBookmark={toggleBookmark}
           />
         </WorldMonitorLayout>
-        {/* NEW: Right Sidebar Widgets */}
-        {widgetsPanelOpen && (
-          <aside className="w-[280px] border-l border-border-default bg-void overflow-y-auto p-2 space-y-2 hidden xl:block">
-            <HealthAlertPanel signals={filteredSignals} />
-            <ActivityWaterfall signals={filteredSignals} maxItems={12} />
-            <FeedPipelineMonitor />
-          </aside>
-        )}
-        {/* Widgets panel toggle */}
-        <button
-          onClick={() => setWidgetsPanelOpen(!widgetsPanelOpen)}
-          className="hidden xl:flex fixed right-0 top-1/2 -translate-y-1/2 z-50 items-center gap-1 px-2 py-3 bg-elevated border border-border-default rounded-l-lg text-[9px] font-mono text-text-dim hover:text-white transition-colors"
-          title={widgetsPanelOpen ? 'Hide widgets' : 'Show widgets'}
-        >
-          <span>{widgetsPanelOpen ? '→' : '←'}</span>
-          <span className="writing-mode-vertical">WIDGETS</span>
-        </button>
       </div>
 
       {/* NEW: Floating Map Controls (Desktop overlay) */}
@@ -771,7 +737,7 @@ export default function Dashboard() {
         )}
         {mobileView === 'markets' && (
           <div className="h-full overflow-y-auto p-2 space-y-2">
-            <HealthAlertPanel signals={filteredSignals} maxItems={3} />
+            <SituationBrief />
             <SituationBrief />
             <TradingChart symbol="XAUUSD" height={250} />
             <MarketTicker markets={markets} loading={marketsLoading || marketsValidating} />
@@ -780,7 +746,7 @@ export default function Dashboard() {
         )}
         {mobileView === 'tracking' && (
           <div className="h-full overflow-y-auto p-2 space-y-2">
-            <DefconIndicator />
+            <SituationBrief />
             <MilitaryTracker />
             <FlightTracker />
             <TrackingPanel earthquakes={earthquakes} />
