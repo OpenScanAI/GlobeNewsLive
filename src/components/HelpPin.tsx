@@ -20,7 +20,7 @@ const SHORTCUTS = [
 
 const FEATURES = [
   { icon: <Layers size={14} />, title: 'Widget Dashboard', desc: 'Add/remove widgets via the Widgets button. Save custom layouts.' },
-  { icon: <Globe size={14} />, title: 'Interactive Map', desc: 'Toggle layers (flights, conflicts, earthquakes) from the layer panel.' },
+  { icon: <Globe size={14} />, title: 'Interactive Map', desc: 'Toggle layers (flights, conflicts, earthquakes) from the map controls.' },
   { icon: <Zap size={14} />, title: 'Live Signals', desc: 'Real-time intelligence feeds with severity filtering.' },
   { icon: <Maximize2 size={14} />, title: 'Fullscreen Mode', desc: 'Press F or use the fullscreen button to expand any panel.' },
 ];

@@ -229,18 +229,7 @@ export default function HotspotStreams() {
             ))}
           </div>
 
-          {/* Channel switcher */}
-          <div className="grid grid-cols-4 gap-1 mt-2">
-            {HOTSPOT_STREAMS.map(hotspot => (
-              <button
-                key={hotspot.id}
-                onClick={() => cycleChannel(hotspot.id)}
-                className="text-[8px] text-center py-1 px-1 rounded bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
-              >
-                {hotspot.icon} Switch
-              </button>
-            ))}
-          </div>
+    
 
           {/* Quick links */}
           <div className="flex items-center justify-center gap-3 mt-2 text-[8px]">
