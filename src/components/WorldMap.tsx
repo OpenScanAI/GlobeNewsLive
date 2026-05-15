@@ -282,20 +282,6 @@ export default function WorldMap({
   >(new Map());
   const [loaded, setLoaded] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
-  const [layerPanelOpen, setLayerPanelOpen] = useState(false);
-
-  // Click outside to close layer dropdown (CTA-02)
-  useEffect(() => {
-    if (!layerPanelOpen) return;
-    const handleClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (!target.closest('.layer-dropdown') && !target.closest('.layer-toggle-btn')) {
-        setLayerPanelOpen(false);
-      }
-    };
-    document.addEventListener('click', handleClick);
-    return () => document.removeEventListener('click', handleClick);
-  }, [layerPanelOpen]);
 
   // Fetch flight data with real-time updates (5 second refresh for smoother movement)
   const { data: flightData, isLoading: flightsLoading } = useSWR<{
@@ -1512,42 +1498,7 @@ export default function WorldMap({
             </span>
           )}
         </div>
-
-        {/* Layer toggle button */}
-        <button
-          onClick={() => setLayerPanelOpen(!layerPanelOpen)}
-          className="layer-toggle-btn px-2 py-1 rounded text-[10px] font-mono bg-white/5 hover:bg-white/10 text-white transition-colors"
-        >
-          LAYERS ▾
-        </button>
       </div>
-
-      {/* Layer panel dropdown */}
-      {layerPanelOpen && (
-        <div className="layer-dropdown absolute top-12 right-2 z-50 bg-void/95 backdrop-blur-sm border border-border-subtle rounded-lg p-2 shadow-xl max-h-80 overflow-y-auto">
-          <div className="grid grid-cols-3 gap-1">
-            {(financeMode ? FINANCE_LAYERS_META : LAYERS).map((layer) => (
-              <button
-                key={layer.id}
-                onClick={() => financeMode ? onLayerToggle(layer.id) : onLayerToggle(layer.id)}
-                className={`px-2 py-1.5 rounded text-[9px] font-mono transition-all flex items-center gap-1 ${
-                  (financeMode ? financeLayers : activeLayers).includes(layer.id)
-                    ? "bg-white/10 text-white"
-                    : "text-text-dim hover:text-text-muted hover:bg-white/5"
-                }`}
-                style={
-                  (financeMode ? financeLayers : activeLayers).includes(layer.id)
-                    ? { borderLeft: `2px solid ${layer.color}` }
-                    : {}
-                }
-              >
-                <span>{layer.icon}</span>
-                <span>{layer.name}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Map container */}
       <div ref={mapContainer} className="flex-1 min-h-[300px]" />
@@ -1582,29 +1533,7 @@ export default function WorldMap({
         </div>
       )}
 
-      {/* Legend overlay */}
-      <div className="absolute bottom-2 left-2 bg-void/90 backdrop-blur-sm rounded p-2 text-[9px] space-y-1 z-10 max-w-[180px]">
-        <div className="text-text-muted font-mono mb-1 flex items-center justify-between">
-          <span>LAYERS</span>
-          <span className="text-[8px] text-text-dim">
-            {financeMode ? (financeLayers?.length || 0) : activeLayers.length} active
-          </span>
-        </div>
-        <div className="flex flex-wrap gap-1">
-          {(financeMode ? FINANCE_LAYERS_META : LAYERS)
-            .filter((l) => (financeMode ? financeLayers : activeLayers).includes(l.id))
-            .map((layer) => (
-              <div
-                key={layer.id}
-                className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-white/5"
-                style={{ borderLeft: `2px solid ${layer.color}` }}
-              >
-                <span>{layer.icon}</span>
-                <span className="text-text-muted">{layer.name}</span>
-              </div>
-            ))}
-        </div>
-      </div>
+
 
       {/* Cluster stats overlay (when clusters enabled) */}
       {activeLayers.includes("clusters") && clusters.length > 0 && (
