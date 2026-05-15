@@ -1533,29 +1533,7 @@ export default function WorldMap({
         </div>
       )}
 
-      {/* Legend overlay */}
-      <div className="absolute bottom-2 left-2 bg-void/90 backdrop-blur-sm rounded p-2 text-[9px] space-y-1 z-10 max-w-[180px]">
-        <div className="text-text-muted font-mono mb-1 flex items-center justify-between">
-          <span>LAYERS</span>
-          <span className="text-[8px] text-text-dim">
-            {financeMode ? (financeLayers?.length || 0) : activeLayers.length} active
-          </span>
-        </div>
-        <div className="flex flex-wrap gap-1">
-          {(financeMode ? FINANCE_LAYERS_META : LAYERS)
-            .filter((l) => (financeMode ? financeLayers : activeLayers).includes(l.id))
-            .map((layer) => (
-              <div
-                key={layer.id}
-                className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-white/5"
-                style={{ borderLeft: `2px solid ${layer.color}` }}
-              >
-                <span>{layer.icon}</span>
-                <span className="text-text-muted">{layer.name}</span>
-              </div>
-            ))}
-        </div>
-      </div>
+
 
       {/* Cluster stats overlay (when clusters enabled) */}
       {activeLayers.includes("clusters") && clusters.length > 0 && (
