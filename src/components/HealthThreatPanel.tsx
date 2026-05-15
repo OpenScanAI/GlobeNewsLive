@@ -110,20 +110,24 @@ export default function HealthThreatPanel() {
     .sort((a, b) => new Date(b.reported_date).getTime() - new Date(a.reported_date).getTime())
     .slice(0, 10);
 
-  const countsByType = (type: string) => outbreaks.filter(o => o.signal_type === type).length;
+  const countsByType = (type: string) => {
+    if (type === 'confirmed_case') {
+      return outbreaks
+        .filter(o => o.signal_type === 'confirmed_case')
+        .reduce((sum, o) => sum + (o.case_count || 1), 0);
+    }
+    return outbreaks.filter(o => o.signal_type === type).length;
+  };
 
-  // Aggregate stats for Hantavirus outbreak panel
-  const hantavirusOutbreaks = outbreaks.filter(o => o.virus === 'Hantavirus');
-  const confirmedCases = hantavirusOutbreaks
+  // Aggregate stats — derive from ALL outbreaks (same source as sidebar counts)
+  const confirmedCases = outbreaks
     .filter(o => o.signal_type === 'confirmed_case')
-    .reduce((sum, o) => sum + (o.case_count || 0), 0);
-  // Hardcode deaths from MV Hondius summary: "6 confirmed, 3 deaths"
-  const deaths = 3;
-  const monitored = hantavirusOutbreaks
+    .reduce((sum, o) => sum + (o.case_count || 1), 0);  // fallback to 1 if case_count null
+  const deaths = 3;  // from MV Hondius summary
+  const monitored = outbreaks
     .filter(o => o.signal_type === 'monitoring')
     .reduce((sum, o) => sum + (o.monitoring_count || 0), 0);
-  // Probable = cases where case_count exists but not confirmed (or from summary text)
-  const probableCases = hantavirusOutbreaks
+  const probableCases = outbreaks
     .filter(o => o.signal_type === 'monitoring' && o.case_count && o.case_count > 0)
     .reduce((sum, o) => sum + (o.case_count || 0), 0);
 

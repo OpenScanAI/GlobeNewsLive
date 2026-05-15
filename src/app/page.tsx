@@ -15,7 +15,6 @@ import SourceHealth from '@/components/SourceHealth';
 import MobileNavEnhanced from '@/components/MobileNavEnhanced';
 import StatsBar from '@/components/StatsBar';
 import SituationBrief from '@/components/SituationBrief';
-import DefconIndicator from '@/components/DefconIndicator';
 import TwitterFeed from '@/components/TwitterFeed';
 import MilitaryTracker from '@/components/MilitaryTracker';
 import LiveVideoPanel from '@/components/LiveVideoPanel';
@@ -27,7 +26,6 @@ import MultiPredictions from '@/components/MultiPredictions';
 import NewsChannels from '@/components/NewsChannels';
 import FlightRadar from '@/components/FlightRadar';
 import FlightTracker from '@/components/FlightTracker';
-import SearchBar from '@/components/SearchBar';
 import CyberFeed from '@/components/CyberFeed';
 import CustomDashboard from '@/components/CustomDashboard';
 import MapStreams from '@/components/MapStreams';
@@ -35,13 +33,7 @@ import RiskDashboard from '@/components/RiskDashboard';
 import { usePersistentTimeFilter } from '@/hooks/usePersistentTimeFilter';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import SentimentMeter from '@/components/SentimentMeter';
-import KeyboardShortcutsHelp from '@/components/KeyboardShortcutsHelp';
-import BookmarkManager, { useSignalBookmarks, BookmarkButton } from '@/components/BookmarkManager';
-import FullscreenToggle from '@/components/FullscreenToggle';
 import RefreshCountdown from '@/components/RefreshCountdown';
-import CustomAlertsPanel, { useCustomAlerts } from '@/components/CustomAlertsPanel';
-import AdvancedFilters from '@/components/AdvancedFilters';
-import EmailNotifications from '@/components/EmailNotifications';
 import CustomVideoWall from '@/components/CustomVideoWall';
 import { useLanguage } from '@/components/LanguageSelector';
 import CommandPalette from '@/components/CommandPalette';
@@ -54,15 +46,12 @@ import TVMode from '@/components/TVMode';
 import HelpPin from '@/components/HelpPin';
 import PortStatusPanel from '@/components/PortStatusPanel';
 import GlobalSituationHeader from '@/components/GlobalSituationHeader';
-import TimeRangeSelector, { TimeRange } from '@/components/TimeRangeSelector';
-import RegionSelector, { Region } from '@/components/RegionSelector';
-import CategoryFilterBar from '@/components/CategoryFilterBar';
-import ActivityWaterfall from '@/components/ActivityWaterfall';
-import FeedPipelineMonitor from '@/components/FeedPipelineMonitor';
 import EnhancedMapControls from '@/components/EnhancedMapControls';
 import LiveNewsTicker from '@/components/LiveNewsTicker';
-import HealthAlertPanel from '@/components/HealthAlertPanel';
 import { Signal, MarketData, PredictionMarket, ThreatLevel, SignalCategory } from '@/types';
+import { useSignalBookmarks } from '@/components/BookmarkManager';
+import FullscreenToggle from '@/components/FullscreenToggle';
+import type { Region } from '@/components/RegionSelector';
 import { getThreatLevelFromSignals } from '@/lib/classify';
 import { ACTIVE_CONFLICTS } from '@/lib/feeds';
 
@@ -134,8 +123,6 @@ export default function Dashboard() {
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [tvMode, setTvMode] = useState(false);
   const [videoWallOpen, setVideoWallOpen] = useState(false);
-  
-  // New feature states
   const [activeRegion, setActiveRegion] = useState<Region>('global');
   const [activeCategories, setActiveCategories] = useState<SignalCategory[]>([
     'conflict', 'military', 'diplomacy', 'cyber', 'disaster', 'economy', 'politics', 'terrorism', 'protest', 'infrastructure', 'health'
@@ -146,7 +133,6 @@ export default function Dashboard() {
 
   // Custom hooks
   const { bookmarks, toggleBookmark, isBookmarked, clearBookmarks, bookmarkCount } = useSignalBookmarks();
-  const { alerts, addAlert, removeAlert, toggleAlert, checkMatches, enabledCount } = useCustomAlerts();
 
   // Theme toggle
   const { isDark, toggle: toggleTheme } = useTheme();
@@ -165,6 +151,7 @@ export default function Dashboard() {
         });
     }
   }, []);
+
 
   // Command Palette shortcut
   useEffect(() => {
@@ -670,35 +657,8 @@ export default function Dashboard() {
           </button>
         </div>
         <div className="flex items-center gap-3">
-          <KeyboardShortcutsHelp />
-          <BookmarkManager signals={signals} bookmarks={bookmarks} onClear={clearBookmarks} onToggle={toggleBookmark} />
-          <FullscreenToggle />
-          <CustomAlertsPanel alerts={alerts} onAdd={addAlert} onRemove={removeAlert} onToggle={toggleAlert} />
-          <AdvancedFilters signals={signals} onFilterChange={(filtered) => console.log('Filtered:', filtered.length)} />
-          <EmailNotifications signals={signals} />
           <PushNotificationManager signals={signals} criticalCount={criticalCount} />
-          <button
-            onClick={() => setCommandPaletteOpen(true)}
-            className="flex items-center gap-2 px-3 py-1 rounded text-[10px] font-mono text-text-dim hover:text-white border border-border-subtle hover:border-accent-green/30 transition-colors"
-          >
-            <span>⌘K</span>
-            <span className="hidden xl:inline">Search</span>
-          </button>
-          <SearchBar signals={filteredSignals} />
           <span className="text-[9px] text-text-dim font-mono hidden xl:inline">{filteredSignals.length} / {signals.length} signals</span>
-          <button
-            onClick={() => setSoundEnabled(!soundEnabled)}
-            className={`flex items-center gap-1.5 px-2 py-1 rounded text-[9px] font-mono ${soundEnabled ? 'bg-accent-green/20 text-accent-green' : 'bg-elevated text-text-dim'}`}
-          >
-            {soundEnabled ? '🔔' : '🔕'} ALERTS
-          </button>
-          <button
-            onClick={() => setNotificationLevel(notificationLevel === 'critical' ? 'all' : 'critical')}
-            className={`flex items-center gap-1.5 px-2 py-1 rounded text-[9px] font-mono ${notificationLevel === 'all' ? 'bg-accent-blue/20 text-accent-blue' : 'bg-elevated text-text-dim'}`}
-            title={notificationLevel === 'critical' ? 'Only Critical notifications' : 'All updates notifications'}
-          >
-            {notificationLevel === 'critical' ? '🔴' : '🔵'} {notificationLevel === 'critical' ? 'CRIT' : 'ALL'}
-          </button>
         </div>
       </div>
 
@@ -722,14 +682,7 @@ export default function Dashboard() {
         lastUpdate={lastUpdate} 
       />
 
-      {/* NEW: Control Bars */}
-      <div className="hidden lg:flex items-center gap-2 px-4 py-1.5 bg-void border-b border-border-default overflow-x-auto">
-        <TimeRangeSelector value={timeFilter as TimeRange} onChange={setTimeFilter} />
-        <RegionSelector value={activeRegion} onChange={setActiveRegion} />
-        <div className="flex-1 min-w-0">
-          <CategoryFilterBar active={activeCategories} onToggle={handleCategoryToggle} />
-        </div>
-      </div>
+
 
       {/* Desktop Layout — WorldMonitor-style with sidebar + PR24 enhancements */}
       <div className="hidden lg:flex flex-1 overflow-hidden">
@@ -748,12 +701,6 @@ export default function Dashboard() {
             onBookmark={toggleBookmark}
           />
         </WorldMonitorLayout>
-        {/* NEW: Right Sidebar Widgets */}
-        <aside className="w-[280px] border-l border-border-default bg-void overflow-y-auto p-2 space-y-2 hidden xl:block">
-          <HealthAlertPanel signals={filteredSignals} />
-          <ActivityWaterfall signals={filteredSignals} maxItems={12} />
-          <FeedPipelineMonitor />
-        </aside>
       </div>
 
       {/* NEW: Floating Map Controls (Desktop overlay) */}
@@ -790,7 +737,7 @@ export default function Dashboard() {
         )}
         {mobileView === 'markets' && (
           <div className="h-full overflow-y-auto p-2 space-y-2">
-            <HealthAlertPanel signals={filteredSignals} maxItems={3} />
+            <SituationBrief />
             <SituationBrief />
             <TradingChart symbol="XAUUSD" height={250} />
             <MarketTicker markets={markets} loading={marketsLoading || marketsValidating} />
@@ -799,7 +746,7 @@ export default function Dashboard() {
         )}
         {mobileView === 'tracking' && (
           <div className="h-full overflow-y-auto p-2 space-y-2">
-            <DefconIndicator />
+            <SituationBrief />
             <MilitaryTracker />
             <FlightTracker />
             <TrackingPanel earthquakes={earthquakes} />

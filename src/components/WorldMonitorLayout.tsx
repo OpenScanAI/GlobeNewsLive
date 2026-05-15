@@ -1,7 +1,7 @@
 'use client';
 import { MapViewProvider, useMapView } from '@/contexts/MapViewContext';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { Signal, MarketData } from '@/types';
 
 interface LayerConfig {
@@ -46,7 +46,13 @@ const REGION_PRESETS = [
 
 function WorldMonitorLayoutInner({ children, signals, activeLayers, onLayerToggle, defcon = 3, criticalCount = 0 }: WorldMonitorLayoutProps) {
   const [layers, setLayers] = useState<LayerConfig[]>(SIDEBAR_LAYERS);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('globenews_layers_panel_open');
+      return saved !== null ? saved === 'true' : false; // default closed
+    }
+    return false;
+  });
   const [region, setRegion] = useState('global');
   const [layerSearch, setLayerSearch] = useState('');
   const { mapView: view, setMapView: setView } = useMapView();
@@ -56,8 +62,12 @@ function WorldMonitorLayoutInner({ children, signals, activeLayers, onLayerToggl
     onLayerToggle(id);
   };
 
+  // Persist sidebar open/closed state
+  useEffect(() => {
+    localStorage.setItem('globenews_layers_panel_open', String(sidebarOpen));
+  }, [sidebarOpen]);
+
   const defconColors: Record<number, string> = { 1: '#ff0000', 2: '#ff4400', 3: '#ffcc00', 4: '#00ccff', 5: '#00ff88' };
-  const defconNames: Record<number, string> = { 1: 'COCKED PISTOL', 2: 'FAST PACE', 3: 'ROUND HOUSE', 4: 'DOUBLE TAKE', 5: 'FADE OUT' };
 
   const filteredLayers = layers.filter(l =>
     layerSearch === '' || l.label.toLowerCase().includes(layerSearch.toLowerCase())
@@ -87,23 +97,6 @@ function WorldMonitorLayoutInner({ children, signals, activeLayers, onLayerToggl
               </button>
             ))}
           </div>
-        </div>
-
-        {/* Center: GLOBAL SITUATION */}
-        <div className="hidden md:flex items-center gap-3">
-          <span className="text-[10px] font-mono font-bold text-white/50 tracking-widest">GLOBAL SITUATION</span>
-          <div className="flex items-center gap-1.5 px-2 py-0.5 rounded border"
-            style={{ borderColor: defconColors[defcon] + '40', backgroundColor: defconColors[defcon] + '10' }}>
-            <span className="text-[8px] font-mono text-white/50">DEFCON</span>
-            <span className="text-[10px] font-mono font-bold" style={{ color: defconColors[defcon] }}>{defcon}</span>
-            <span className="text-[8px] font-mono" style={{ color: defconColors[defcon] + 'aa' }}>{defconNames[defcon]}</span>
-          </div>
-          {criticalCount > 0 && (
-            <div className="flex items-center gap-1 px-2 py-0.5 rounded bg-accent-red/10 border border-accent-red/30">
-              <div className="w-1.5 h-1.5 bg-accent-red rounded-full animate-pulse" />
-              <span className="text-[9px] font-mono text-accent-red font-bold">{criticalCount} CRITICAL</span>
-            </div>
-          )}
         </div>
 
         {/* Right: 2D/3D toggle + signal count */}
