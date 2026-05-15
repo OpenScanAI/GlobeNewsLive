@@ -46,15 +46,7 @@ const REGION_PRESETS = [
 
 function WorldMonitorLayoutInner({ children, signals, activeLayers, onLayerToggle, defcon = 3, criticalCount = 0 }: WorldMonitorLayoutProps) {
   const [layers, setLayers] = useState<LayerConfig[]>(SIDEBAR_LAYERS);
-  const [sidebarOpen, setSidebarOpen] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('globenews_layers_panel_open');
-      return saved !== null ? saved === 'true' : false; // default closed
-    }
-    return false;
-  });
   const [region, setRegion] = useState('global');
-  const [layerSearch, setLayerSearch] = useState('');
   const { mapView: view, setMapView: setView } = useMapView();
 
   const toggleLayer = (id: string) => {
@@ -62,32 +54,14 @@ function WorldMonitorLayoutInner({ children, signals, activeLayers, onLayerToggl
     onLayerToggle(id);
   };
 
-  // Persist sidebar open/closed state
-  useEffect(() => {
-    localStorage.setItem('globenews_layers_panel_open', String(sidebarOpen));
-  }, [sidebarOpen]);
-
-  const defconColors: Record<number, string> = { 1: '#ff0000', 2: '#ff4400', 3: '#ffcc00', 4: '#00ccff', 5: '#00ff88' };
-
-  const filteredLayers = layers.filter(l =>
-    layerSearch === '' || l.label.toLowerCase().includes(layerSearch.toLowerCase())
-  );
-
   const activeCount = layers.filter(l => l.active).length;
 
   return (
     <div className="flex flex-col h-full w-full bg-void overflow-hidden">
       {/* WorldMonitor-style sub-nav */}
       <div className="flex items-center justify-between px-3 py-1.5 bg-black/40 border-b border-white/[0.06] backdrop-blur-sm z-20">
-        {/* Left: view + region */}
+        {/* Left: region presets only (layers tab removed per #43) */}
         <div className="flex items-center gap-2">
-          <button onClick={() => setSidebarOpen(!sidebarOpen)}
-            className={`flex items-center gap-1.5 px-2 py-1 rounded text-[9px] font-mono border transition-all ${sidebarOpen ? 'bg-white/10 border-white/20 text-white' : 'border-white/10 text-text-dim hover:text-white'}`}>
-            <span>☰</span>
-            <span className="hidden sm:inline">LAYERS</span>
-            <span className="px-1 bg-accent-green/20 text-accent-green rounded text-[8px]">{activeCount}</span>
-          </button>
-
           <div className="flex items-center gap-1">
             {REGION_PRESETS.map(r => (
               <button key={r.id} onClick={() => setRegion(r.id)}
@@ -117,66 +91,8 @@ function WorldMonitorLayoutInner({ children, signals, activeLayers, onLayerToggl
         </div>
       </div>
 
-      {/* Main content area */}
+      {/* Main content area — sidebar removed per #43 */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Left sidebar — layer toggles */}
-        {sidebarOpen && (
-          <div className="w-52 flex-shrink-0 bg-black/30 border-r border-white/[0.06] flex flex-col backdrop-blur-sm z-10">
-            {/* Search */}
-            <div className="p-2 border-b border-white/[0.06]">
-              <input
-                value={layerSearch}
-                onChange={e => setLayerSearch(e.target.value)}
-                placeholder="Search layers..."
-                className="w-full bg-white/[0.04] border border-white/[0.08] rounded px-2 py-1.5 text-[9px] font-mono text-white placeholder-text-dim outline-none focus:border-accent-green/30"
-              />
-            </div>
-
-            {/* Layer list */}
-            <div className="flex-1 overflow-y-auto scrollbar-none p-2 space-y-0.5">
-              {filteredLayers.map(layer => (
-                <label key={layer.id}
-                  className={`flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer transition-all hover:bg-white/[0.04] group ${layer.active ? 'bg-white/[0.03]' : ''}`}>
-                  <div className={`w-3.5 h-3.5 rounded border flex items-center justify-center flex-shrink-0 transition-all ${layer.active ? 'border-transparent' : 'border-white/20'}`}
-                    style={layer.active ? { backgroundColor: layer.color + '30', borderColor: layer.color + '60' } : {}}>
-                    {layer.active && (
-                      <svg className="w-2 h-2" viewBox="0 0 8 8" fill="none">
-                        <path d="M1 4l2 2 4-4" stroke={layer.color} strokeWidth="1.5" strokeLinecap="round"/>
-                      </svg>
-                    )}
-                  </div>
-                  <input type="checkbox" checked={layer.active} onChange={() => toggleLayer(layer.id)} className="hidden" />
-                  <span className="text-[10px]">{layer.icon}</span>
-                  <span className={`text-[9px] font-mono flex-1 transition-colors ${layer.active ? 'text-white/80' : 'text-text-dim group-hover:text-white/60'}`}>
-                    {layer.label}
-                  </span>
-                  <div className="w-1.5 h-1.5 rounded-full flex-shrink-0 transition-all"
-                    style={{ backgroundColor: layer.active ? layer.color : 'transparent', boxShadow: layer.active ? `0 0 4px ${layer.color}` : 'none' }} />
-                </label>
-              ))}
-            </div>
-
-            {/* Legend */}
-            <div className="p-2 border-t border-white/[0.06]">
-              <div className="text-[8px] font-mono text-text-dim mb-1.5 tracking-wider">LEGEND</div>
-              <div className="space-y-1">
-                {[
-                  { color: '#ff2244', label: 'High Alert' },
-                  { color: '#ff6633', label: 'Elevated' },
-                  { color: '#ffcc00', label: 'Monitoring' },
-                  { color: '#4488ff', label: 'Base/Asset' },
-                  { color: '#00ff88', label: 'Secure' },
-                ].map(l => (
-                  <div key={l.label} className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: l.color }} />
-                    <span className="text-[8px] font-mono text-text-dim">{l.label}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Main dashboard content */}
         <div className="flex-1 overflow-hidden">
           {children}
