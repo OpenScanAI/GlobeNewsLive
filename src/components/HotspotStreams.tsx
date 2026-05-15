@@ -64,7 +64,19 @@ function StreamPlayer({ hotspot, channelIndex, isMuted, isExpanded, onExpand }: 
   const [hasError, setHasError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   
-  const embedUrl = `https://www.youtube.com/embed/${channel.embedId}?autoplay=1&mute=${isMuted ? 1 : 0}&rel=0&modestbranding=1&playsinline=1&controls=0&enablejsapi=1`;
+  // Use HLS streams when available (more reliable than YouTube embeds)
+  const HLS_STREAMS: Record<string, string> = {
+    'KyG6amQVSco': 'https://live-hls-web-aje.getaj.net/AJE/01.m3u8',
+    'u9foWyMSrrQ': 'https://stream.france24.com/live/en.m3u8',
+    'pYFyp0aYPHw': 'https://dwamdstream104.akamaized.net/hls/live/2015530/dwstream104/index.m3u8',
+    'NygUCOEHrF8': 'https://linear401-gb-hls1-prd-ak.cdn.skycdp.com/100e/Content/HLS_001_1080_30/Live/channel(skynews)/index.m3u8',
+    'f0lYkdA-Gtw': 'https://nhkworld.webcdn.stream.ne.jp/www11/nhkworld-tv/domestic/263942/live.m3u8',
+  };
+
+  const hlsUrl = HLS_STREAMS[channel.embedId];
+  const embedUrl = hlsUrl
+    ? null
+    : `https://www.youtube.com/embed/${channel.embedId}?autoplay=1&mute=${isMuted ? 1 : 0}&rel=0&modestbranding=1&playsinline=1&controls=0&enablejsapi=1`;
 
   return (
     <div className={`relative bg-black rounded overflow-hidden ${isExpanded ? 'col-span-2 row-span-2' : ''}`}>
@@ -110,14 +122,27 @@ function StreamPlayer({ hotspot, channelIndex, isMuted, isExpanded, onExpand }: 
               <RefreshCw className="w-5 h-5 text-white/50 animate-spin" />
             </div>
           )}
-          <iframe
-            src={embedUrl}
-            className="w-full h-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            onLoad={() => setIsLoaded(true)}
-            onError={() => setHasError(true)}
-          />
+          {hlsUrl ? (
+            <video
+              src={hlsUrl}
+              className="w-full h-full"
+              autoPlay
+              muted={isMuted}
+              playsInline
+              controls={false}
+              onLoadedData={() => setIsLoaded(true)}
+              onError={() => setHasError(true)}
+            />
+          ) : (
+            <iframe
+              src={embedUrl}
+              className="w-full h-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              onLoad={() => setIsLoaded(true)}
+              onError={() => setHasError(true)}
+            />
+          )}
         </div>
       )}
 

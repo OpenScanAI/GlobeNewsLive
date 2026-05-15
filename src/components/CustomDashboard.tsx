@@ -101,9 +101,9 @@ import MarketTicker from "./MarketTicker";
 import MultiPredictions from "./MultiPredictions";
 import CountryRiskPanel from "./CountryRiskPanel";
 
-import WidgetSelector, {
-  WidgetConfig,
+import {
   WIDGET_REGISTRY,
+  type WidgetConfig,
 } from "./WidgetSelector";
 import SettingsModal, {
   DashboardSettings,
@@ -601,7 +601,6 @@ export default function CustomDashboard({
     "intelligence-analyst",
   );
 
-  const [showWidgetSelector, setShowWidgetSelector] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showPresetsMenu, setShowPresetsMenu] = useState(false);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
@@ -1257,25 +1256,6 @@ export default function CustomDashboard({
             {/* Spacer */}
             <div className="flex-1" />
 
-            {/* Widget Selector button */}
-            <button
-              onClick={() => setShowWidgetSelector((v) => !v)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[11px] font-mono border transition-all"
-              style={{
-                background: showWidgetSelector
-                  ? "rgba(0,204,255,0.1)"
-                  : "rgba(255,255,255,0.05)",
-                borderColor: showWidgetSelector
-                  ? "rgba(0,204,255,0.3)"
-                  : "rgba(255,255,255,0.1)",
-                color: showWidgetSelector ? "#00ccff" : "rgba(255,255,255,0.5)",
-              }}
-              title="Add/remove widgets"
-            >
-              <Plus size={11} />
-              <span className="hidden sm:inline">Widgets</span>
-            </button>
-
             {/* Settings */}
             <button
               onClick={() => setShowSettingsModal(true)}
@@ -1366,37 +1346,18 @@ export default function CustomDashboard({
               </div>
             )}
 
-            {/* Empty state */}
+            {/* Empty state — no widgets active (WidgetSelector removed per #43) */}
             {isMounted && otherVisibleWidgets.length === 0 && (
               <div className="flex flex-col items-center justify-center h-full gap-4 py-20">
                 <div className="text-5xl">📭</div>
                 <div className="text-white/40 font-mono text-sm">
                   No widgets active
                 </div>
-                <button
-                  onClick={() => setShowWidgetSelector(true)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-[11px] font-mono border transition-all"
-                  style={{
-                    background: "rgba(0,255,136,0.1)",
-                    borderColor: "rgba(0,255,136,0.3)",
-                    color: "#00ff88",
-                  }}
-                >
-                  <Plus size={12} /> Add Widgets
-                </button>
               </div>
             )}
           </div>
         </div>
-        {/* ── Widget Selector Panel ─────────────────────────────────────── */}
-        <WidgetSelector
-          isOpen={showWidgetSelector}
-          onClose={() => setShowWidgetSelector(false)}
-          widgets={widgetConfigs}
-          onToggleWidget={toggleWidget}
-          onAddWidget={addWidget}
-        />
-
+        {/* ── Widget Selector Panel removed per #43 ─────────────────────── */}
         {/* ── Settings Modal ────────────────────────────────────────────── */}
         <SettingsModal
           isOpen={showSettingsModal}
