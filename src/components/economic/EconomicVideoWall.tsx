@@ -14,6 +14,13 @@ interface StreamChannel {
   color: string;
 }
 
+interface NewsItem {
+  headline: string;
+  source?: string;
+  time: string;
+  priority: 'breaking' | 'high' | 'normal';
+}
+
 // Country to primary news channel mapping
 const COUNTRY_STREAMS: Record<string, string> = {
   us: 'abc', gb: 'skynews', fr: 'france24', de: 'dw', it: 'france24',
@@ -27,8 +34,8 @@ const COUNTRY_STREAMS: Record<string, string> = {
 
 const DEFAULT_STREAM = 'france24';
 
-// Country-specific breaking news
-const COUNTRY_NEWS: Record<string, { headline: string; time: string; priority: 'breaking' | 'high' | 'normal' }[]> = {
+// Fallback static news when API is unreachable
+const FALLBACK_NEWS: Record<string, NewsItem[]> = {
   us: [
     { headline: 'Fed signals potential rate pause as inflation cools to 2.9%', time: '2m ago', priority: 'breaking' },
     { headline: 'US debt/GDP hits 118% - sustainability concerns mount', time: '15m ago', priority: 'high' },
@@ -105,25 +112,43 @@ const priorityColors = {
 
 export default function EconomicVideoWall({ selectedCode }: { selectedCode: string | null }) {
   const [stream, setStream] = useState<StreamChannel | null>(null);
-  const [news, setNews] = useState(COUNTRY_NEWS.default);
+  const [news, setNews] = useState<NewsItem[]>(FALLBACK_NEWS.default);
+  const [newsSource, setNewsSource] = useState<'api' | 'fallback'>('fallback');
   const [scrollIndex, setScrollIndex] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/live-streams')
+    setLoading(true);
+
+    // Fetch live stream
+    const streamPromise = fetch(`/api/live-streams?country=${selectedCode || ''}`)
       .then(r => r.json())
       .then(data => {
         const allChannels: StreamChannel[] = data.channels || data.streams || [];
         const streamId = selectedCode ? (COUNTRY_STREAMS[selectedCode] || DEFAULT_STREAM) : DEFAULT_STREAM;
         const found = allChannels.find((c: StreamChannel) => c.id === streamId);
         setStream(found || allChannels[0]);
-        
-        // Set country-specific news
-        const countryNews = selectedCode ? (COUNTRY_NEWS[selectedCode] || COUNTRY_NEWS.default) : COUNTRY_NEWS.default;
-        setNews(countryNews);
-        setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => setStream(null));
+
+    // Fetch country-specific live news
+    const newsPromise = fetch(`/api/economic/news?country=${selectedCode || ''}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.news && data.news.length > 0) {
+          setNews(data.news);
+          setNewsSource(data.source || 'api');
+        } else {
+          throw new Error('Empty news');
+        }
+      })
+      .catch(() => {
+        const fallback = selectedCode ? (FALLBACK_NEWS[selectedCode] || FALLBACK_NEWS.default) : FALLBACK_NEWS.default;
+        setNews(fallback);
+        setNewsSource('fallback');
+      });
+
+    Promise.all([streamPromise, newsPromise]).finally(() => setLoading(false));
   }, [selectedCode]);
 
   // Auto-scroll news every 5 seconds
@@ -262,6 +287,9 @@ export default function EconomicVideoWall({ selectedCode }: { selectedCode: stri
                   {item.priority === 'breaking' ? 'BREAKING' : item.priority === 'high' ? 'HIGH' : 'NEWS'}
                 </span>
                 <div className="flex-1 min-w-0">
+                  {item.source && (
+                    <span className="text-[8px] font-mono text-white/40 block mb-0.5">{item.source}</span>
+                  )}
                   <span className="text-[10px] text-white/80 leading-tight block">{item.headline}</span>
                   <span className="text-[8px] font-mono text-white/30">{item.time}</span>
                 </div>
